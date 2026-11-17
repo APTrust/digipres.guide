@@ -1,0 +1,723 @@
+<title>DigiPres Toolkit Site Concepts</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&family=Literata:ital,opsz,wght@0,7..72,400;0,7..72,600;1,7..72,400&family=Libre+Franklin:wght@500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Young+Serif&family=Figtree:wght@400;500;600;700&display=swap">
+<style>
+/* Layout: a briefing page. Header + "shared foundation", then one tab per concept.
+   Each concept = a live browser-frame mockup (its own fixed light identity) + notes. Then a comparison. */
+:root{
+  --bg:#f6f6f4; --surface:#ffffff; --fg:#1d1c1f; --muted:#5d5a62; --line:#dcd9de;
+  --accent:#7a1f3d; --accent-soft:#f3e4ea; --chip:#ecebee;
+  --sans:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono:"IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#141316; --surface:#1d1c20; --fg:#ecebee; --muted:#a8a4ad; --line:#34323a;
+  --accent:#e58fab; --accent-soft:#3a1d28; --chip:#2a282e; color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#141316; --surface:#1d1c20; --fg:#ecebee; --muted:#a8a4ad; --line:#34323a;
+  --accent:#e58fab; --accent-soft:#3a1d28; --chip:#2a282e; color-scheme:dark }
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.55}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:40px 72px}
+a{color:var(--accent)}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+h1,h2,h3{text-wrap:balance;line-height:1.2;margin:0}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+header.intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:start;margin-bottom:36px}
+header.intro h1{font-size:clamp(28px,4vw,40px);font-weight:600;margin:10px 0 14px}
+header.intro p{margin:0 0 12px;max-width:62ch;color:var(--muted)}
+header.intro p strong{color:var(--fg);font-weight:600}
+.shared{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:20px 22px}
+.shared h2{font-size:15px;font-weight:600;margin-bottom:10px}
+.shared ul{margin:0;padding-left:18px;display:grid;gap:7px;font-size:14.5px}
+.shared li::marker{color:var(--accent)}
+.shared code{font-family:var(--mono);font-size:13px;background:var(--chip);padding:1px 5px;border-radius:4px}
+
+nav.tabs{display:flex;gap:6px;flex-wrap:wrap;border-bottom:1px solid var(--line);margin-bottom:28px;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5;padding-top:8px}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+nav.tabs a{display:flex;gap:8px;align-items:baseline;padding:10px 14px;text-decoration:none;color:var(--muted);border-bottom:3px solid transparent;margin-bottom:-1px;font-weight:500}
+nav.tabs a span{font-family:var(--mono);font-size:12px}
+nav.tabs a[aria-current="page"]{color:var(--fg);border-bottom-color:var(--accent)}
+nav.tabs a:hover{color:var(--fg)}
+
+.concept-head{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:end;margin-bottom:18px}
+.concept-head h2{font-size:clamp(24px,3vw,32px);font-weight:600;margin-top:6px}
+.concept-head p{margin:8px 0 0;color:var(--muted);max-width:68ch}
+.try{font-size:13.5px;color:var(--muted);background:var(--accent-soft);border-radius:6px;padding:8px 12px;max-width:340px}
+.try strong{color:var(--fg)}
+
+/* browser frame */
+.frame{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--surface);box-shadow:0 1px 0 rgba(0,0,0,.03),0 12px 32px -18px rgba(30,20,40,.35)}
+.bar{display:flex;align-items:center;gap:10px;padding:9px 12px;border-bottom:1px solid var(--line);background:var(--chip)}
+.dots{display:flex;gap:6px}.dots i{width:10px;height:10px;border-radius:50%;background:var(--line);display:block}
+.url{flex:1;min-width:0;font-family:var(--mono);font-size:12px;color:var(--muted);background:var(--surface);border-radius:6px;padding:4px 10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.viewport{max-height:640px;overflow:auto;container-type:inline-size}
+
+.notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:28px;margin-top:28px}
+.notes h3{font-size:13px;font-family:var(--mono);font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.notes ul{margin:0;padding-left:18px;display:grid;gap:7px;font-size:15px}
+.notes p{margin:0 0 8px;font-size:15px}
+.stack{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+.stack span{font-family:var(--mono);font-size:12px;background:var(--chip);border-radius:4px;padding:3px 7px}
+.meter{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:14px;margin-top:12px;align-items:center}
+.meter b{font-weight:500;color:var(--muted)}
+.pips{display:flex;gap:3px}.pips i{width:16px;height:6px;border-radius:2px;background:var(--line)}.pips i.on{background:var(--accent)}
+
+/* compare */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:720px;font-size:14.5px}
+th,td{text-align:left;padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:top}
+thead th{font-size:13px;font-weight:600;background:var(--chip)}
+tbody th{font-weight:500;color:var(--muted);width:22%}
+tr:last-child td,tr:last-child th{border-bottom:0}
+.decide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin-top:28px}
+.decide div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px}
+.decide h3{font-size:15.5px;font-weight:600;margin-bottom:6px}
+.decide p{margin:0;font-size:14.5px;color:var(--muted)}
+.rec{margin-top:28px;padding:18px 20px;border-left:3px solid var(--accent);background:var(--surface)}
+.rec p{margin:6px 0 0;max-width:80ch}
+
+@media (max-width:820px){
+  header.intro{grid-template-columns:1fr;gap:20px}
+  .notes,.decide{grid-template-columns:1fr}
+}
+
+/* ============ Concept A: Field Guide (book) ============ */
+.fg{--ink:#24222a;--paper:#fffdfa;--rule:#e7e1da;--bur:#7d1f3e;--soft:#6a646e;--tint:#f6eef0;
+  background:var(--paper);color:var(--ink);font-family:"Literata",Georgia,serif;font-size:16px;line-height:1.65;color-scheme:light}
+.fg-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;border-bottom:1px solid var(--rule);font-family:"Libre Franklin",system-ui,sans-serif;font-size:13px;flex-wrap:wrap}
+.fg-brand{display:flex;gap:10px;align-items:center;font-weight:700;letter-spacing:.01em}
+.fg-brand i{width:10px;height:26px;background:var(--bur);display:block;border-radius:1px}
+.fg-brand small{display:block;font-weight:500;color:var(--soft);font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.fg-actions{display:flex;gap:8px;flex-wrap:wrap}
+.fg-btn{font:inherit;font-weight:600;border:1px solid var(--rule);background:#fff;color:var(--ink);border-radius:4px;padding:6px 10px;cursor:pointer}
+.fg-btn.primary{background:var(--bur);border-color:var(--bur);color:#fff}
+.fg-body{display:grid;grid-template-columns:200px minmax(0,1fr) 190px;gap:32px;padding:26px 22px 40px}
+.fg-toc{font-family:"Libre Franklin",system-ui,sans-serif;font-size:13px}
+.fg-toc input{width:100%;font:inherit;border:1px solid var(--rule);border-radius:4px;padding:6px 8px;margin-bottom:14px;background:#fff;color:var(--ink)}
+.fg-toc ol{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.fg-toc button{all:unset;cursor:pointer;display:block;padding:5px 8px;border-radius:4px;color:var(--soft)}
+.fg-toc button:hover{background:var(--tint);color:var(--ink)}
+.fg-toc button[aria-current="true"]{color:var(--bur);font-weight:600;background:var(--tint)}
+.fg-toc button:focus-visible{outline:2px solid var(--bur)}
+.fg-toc .part{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--soft);padding:12px 8px 4px;font-weight:600}
+.fg-main{max-width:62ch;min-width:0}
+.fg-crumb{font-family:"Libre Franklin",system-ui,sans-serif;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--bur);font-weight:600}
+.fg-main h3{font-weight:600;font-size:30px;line-height:1.15;margin:6px 0 16px;letter-spacing:-.01em}
+.fg-main h4{font-family:"Libre Franklin",system-ui,sans-serif;font-size:16px;margin:24px 0 6px}
+.fg-main p{margin:0 0 14px}
+.fg-term{border:0;background:none;font:inherit;color:inherit;padding:0;border-bottom:1.5px dotted var(--bur);cursor:help;position:relative}
+.fg-pop{position:absolute;left:0;top:calc(100% + 6px);width:min(300px,70vw);background:#fff;border:1px solid var(--rule);border-radius:6px;padding:12px 14px;font-family:"Libre Franklin",system-ui,sans-serif;font-size:13px;line-height:1.5;text-align:left;box-shadow:0 10px 24px -10px rgba(40,20,30,.35);z-index:3;color:var(--ink)}
+.fg-pop b{display:block;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--bur);margin-bottom:4px}
+.fg-check{border:1px solid var(--rule);border-radius:6px;padding:14px 16px;margin:18px 0;background:#fff;font-family:"Libre Franklin",system-ui,sans-serif;font-size:14px}
+.fg-check-head{display:flex;justify-content:space-between;gap:8px;font-weight:700;margin-bottom:8px;flex-wrap:wrap}
+.fg-check-head span{font-weight:500;color:var(--soft)}
+.fg-check label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer}
+.fg-check input{accent-color:var(--bur);margin-top:4px}
+.fg-side{font-family:"Libre Franklin",system-ui,sans-serif;font-size:12.5px;color:var(--soft);line-height:1.5;display:grid;gap:18px;align-content:start;padding-top:64px}
+.fg-side p{margin:0}
+.fg-side sup,.fg-main sup{color:var(--bur);font-weight:700}
+.fg-cite{border-top:1px solid var(--rule);padding-top:12px}
+.fg-cite code{font-family:"IBM Plex Mono",monospace;font-size:11px;word-break:break-word}
+.fg-pager{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--rule);margin-top:28px;padding-top:14px;font-family:"Libre Franklin",system-ui,sans-serif;font-size:13px;flex-wrap:wrap}
+.fg-pager button{all:unset;cursor:pointer;color:var(--bur);font-weight:600}
+@container (max-width:900px){.fg-body{grid-template-columns:180px minmax(0,1fr)}.fg-side{grid-column:2;padding-top:0}}
+@container (max-width:620px){.fg-body{grid-template-columns:1fr;gap:18px}.fg-toc ol{display:flex;flex-wrap:wrap;gap:4px}.fg-toc .part{display:none}.fg-side{grid-column:1}}
+
+/* ============ Concept B: The Cycle ============ */
+.cy{--ink:#14202b;--bg:#f2f6f8;--card:#ffffff;--line:#d6e0e6;--soft:#4f6170;
+  --prep:#2a6fae;--cur:#203864;--chk:#0f6a6e;--tra:#7f6100;--sav:#2c6a2c;
+  background:var(--bg);color:var(--ink);font-family:"Atkinson Hyperlegible",system-ui,sans-serif;font-size:16px;line-height:1.55;color-scheme:light}
+.cy-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;background:var(--card);border-bottom:1px solid var(--line);flex-wrap:wrap}
+.cy-logo{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:17px;letter-spacing:-.01em}
+.cy-logo span{color:var(--chk)}
+.cy-nav{display:flex;gap:4px;font-size:14px;flex-wrap:wrap}
+.cy-nav a{color:var(--soft);text-decoration:none;padding:6px 10px;border-radius:6px}
+.cy-nav a.on{background:var(--ink);color:#fff}
+.cy-hero{padding:26px 22px 4px;max-width:760px}
+.cy-hero h3{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:clamp(24px,4.4cqi,36px);line-height:1.08;letter-spacing:-.02em;margin:0 0 10px}
+.cy-hero p{margin:0;color:var(--soft);max-width:60ch}
+.cy-phases{display:flex;gap:8px;flex-wrap:wrap;padding:14px 22px 0;font-size:13px}
+.cy-phases span{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:4px 11px;color:var(--soft)}
+.cy-phases span.on{border-color:var(--ink);color:var(--ink);font-weight:700}
+.cy-grid{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:24px;padding:16px 22px 30px;align-items:start}
+.cy-ring svg{width:100%;height:auto;display:block}
+.cy-ring .node{cursor:pointer}
+.cy-ring .node rect{transition:transform .15s ease}
+.cy-ring .node:focus{outline:none}
+.cy-ring .node:focus-visible rect.halo,.cy-ring .node.on rect.halo{stroke:var(--ink);stroke-width:3}
+.cy-panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 22px;border-top:6px solid var(--stage,var(--prep))}
+.cy-panel .num{font-size:13px;font-weight:700;color:var(--stage);letter-spacing:.06em;text-transform:uppercase}
+.cy-panel h4{font-family:"Bricolage Grotesque",system-ui,sans-serif;font-weight:800;font-size:26px;letter-spacing:-.015em;margin:2px 0 6px}
+.cy-panel > p{margin:0 0 14px;color:var(--soft)}
+.cy-prog{display:flex;align-items:center;gap:10px;font-size:13.5px;font-weight:700;margin-bottom:6px}
+.cy-prog .track{flex:1;height:8px;background:var(--bg);border-radius:4px;overflow:hidden}
+.cy-prog .fill{height:100%;background:var(--stage);width:0;transition:width .25s ease}
+.cy-list{list-style:none;margin:0 0 14px;padding:0;display:grid;gap:2px}
+.cy-list label{display:flex;gap:10px;padding:7px 4px;border-bottom:1px solid var(--bg);cursor:pointer;font-size:15px}
+.cy-list input{width:18px;height:18px;accent-color:var(--stage);flex:none;margin-top:2px}
+.cy-tools{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:13.5px}
+.cy-tools b{margin-right:4px}
+.cy-tools span{background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:3px 9px}
+.cy-more{display:flex;justify-content:space-between;gap:10px;margin-top:16px;font-size:14px;font-weight:700;flex-wrap:wrap}
+.cy-more a{color:var(--stage)}
+.cy-note{font-size:12.5px;color:var(--soft);margin-top:8px}
+@container (max-width:720px){.cy-grid{grid-template-columns:1fr}.cy-ring{max-width:380px;margin:0 auto;width:100%}}
+.cy-search,.pf-search{font:inherit;font-size:13.5px;border-radius:6px;padding:5px 9px;width:170px;max-width:100%}
+.cy-search{border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.cy-right,.pf-right{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.site-foot{display:flex;justify-content:space-between;gap:8px 16px;flex-wrap:wrap;padding:14px 22px;font-size:12.5px}
+.cy .site-foot{border-top:1px solid var(--line);background:var(--card);color:var(--soft)}
+.pf .site-foot{border-top:1px solid var(--line);background:var(--card);color:var(--soft)}
+.site-foot a{color:inherit;font-weight:700}
+.site-foot span{display:flex;gap:14px;flex-wrap:wrap}
+.cy-crumb{font-size:12.5px;color:var(--soft);padding:12px 22px 0}
+.cy-crumb a{color:var(--soft)}
+
+/* ============ Concept C: Start Where You Are ============ */
+.pf{--ink:#1f2622;--bg:#f4f7f4;--card:#ffffff;--line:#d9e2dc;--soft:#57635c;--green:#1e6b5e;--green-soft:#e2efe9;--rust:#a8521a;--rust-soft:#f7e9dd;
+  background:var(--bg);color:var(--ink);font-family:"Figtree",system-ui,sans-serif;font-size:16px;line-height:1.55;color-scheme:light}
+.pf-top{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 22px;flex-wrap:wrap;border-bottom:1px solid var(--line);background:var(--card)}
+.pf-logo{font-family:"Young Serif",Georgia,serif;font-size:18px}
+.pf-logo em{font-style:normal;color:var(--rust)}
+.pf-top nav{display:flex;gap:14px;font-size:14px;font-weight:500;flex-wrap:wrap}
+.pf-top nav a{color:var(--soft);text-decoration:none}
+.pf-search{border:1px solid var(--line);background:var(--bg);color:var(--ink)}
+.pf-layout{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:26px;padding:24px 22px 32px}
+.pf-main{min-width:0}
+.pf-main h3{font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:clamp(26px,4.6cqi,40px);line-height:1.1;margin:0 0 8px}
+.pf-lede{color:var(--soft);margin:0 0 20px;max-width:58ch}
+.pf-q{font-weight:700;font-size:14px;margin:0 0 10px;display:flex;gap:8px;align-items:center}
+.pf-q i{font-style:normal;width:22px;height:22px;border-radius:50%;background:var(--green);color:#fff;display:grid;place-items:center;font-size:12px}
+.pf-cards{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-bottom:20px}
+.pf-card{all:unset;box-sizing:border-box;cursor:pointer;background:var(--card);border:1.5px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:4px;align-content:start}
+.pf-card strong{font-size:15px;line-height:1.3}
+.pf-card span{font-size:13px;color:var(--soft);line-height:1.4}
+.pf-card[aria-pressed="true"]{border-color:var(--green);background:var(--green-soft);box-shadow:inset 0 0 0 1px var(--green)}
+.pf-card:focus-visible,.pf-chip:focus-visible{outline:2px solid var(--green);outline-offset:2px}
+.pf-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:22px}
+.pf-chip{all:unset;cursor:pointer;font-size:14px;font-weight:500;border:1.5px solid var(--line);background:var(--card);border-radius:999px;padding:6px 14px}
+.pf-chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.pf-path{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px}
+.pf-path-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;flex-wrap:wrap;margin-bottom:10px}
+.pf-path-head h4{font-family:"Young Serif",Georgia,serif;font-weight:400;font-size:21px;margin:0}
+.pf-path-head span{font-size:13px;color:var(--soft)}
+.pf-steps{list-style:none;margin:0;padding:0;counter-reset:s;display:grid;gap:0}
+.pf-steps li{counter-increment:s;display:grid;grid-template-columns:30px minmax(0,1fr);gap:12px;padding:11px 0;border-top:1px solid var(--line)}
+.pf-steps li::before{content:counter(s);width:26px;height:26px;border-radius:50%;border:1.5px solid var(--green);color:var(--green);display:grid;place-items:center;font-weight:700;font-size:13px}
+.pf-steps b{display:block;font-size:15px}
+.pf-steps p{margin:2px 0 6px;font-size:14px;color:var(--soft)}
+.pf-tags{display:flex;flex-wrap:wrap;gap:5px}
+.pf-tags span{font-size:12px;font-weight:600;padding:2px 8px;border-radius:5px;background:var(--green-soft);color:var(--green)}
+.pf-tags span.store{background:var(--rust-soft);color:var(--rust)}
+.pf-tags a{font-size:12px;font-weight:600;color:var(--soft)}
+.pf-good{margin-top:14px;font-size:14px;background:var(--rust-soft);border-radius:8px;padding:10px 12px}
+.pf-aside{display:grid;gap:14px;align-content:start}
+.pf-box{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px}
+.pf-box h5{margin:0 0 8px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--soft)}
+.pf-box input{width:100%;font:inherit;font-size:14px;border:1px solid var(--line);border-radius:6px;padding:7px 9px;background:var(--bg);color:var(--ink)}
+.pf-gloss{list-style:none;margin:10px 0 0;padding:0;display:grid;gap:10px;max-height:300px;overflow:auto}
+.pf-gloss li{font-size:13px;line-height:1.45}
+.pf-gloss b{display:block;font-size:14px}
+.pf-gloss small{color:var(--soft);font-weight:600}
+.pf-box ul.plain{margin:0;padding-left:16px;font-size:13.5px;display:grid;gap:4px}
+@container (max-width:760px){.pf-layout{grid-template-columns:1fr}.pf-cards{grid-template-columns:1fr}}
+
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+<div class="wrap">
+  <header class="intro">
+    <div>
+      <div class="eyebrow">CLIR Pocket Burgundy · website directions</div>
+      <h1>Three ways to put the toolkit on the web</h1>
+      <p>Each concept below takes the same manuscript, <em>Digital Preservation Appraisal &amp; Selection: Toolkit for Organizations with Limited Resources</em>, and gives readers a different way in. The mockups use real text from the November 10 draft and you can click around in them.</p>
+      <p><strong>What we need from the team:</strong> pick the front door. The book's chapters, interactive checklists, glossary, and tool lists show up in all three. The concepts differ in what a first-time visitor sees and does first.</p>
+    </div>
+    <aside class="shared" aria-label="Shared foundation">
+      <h2>Same in every concept</h2>
+      <ul>
+        <li>Authors edit Markdown files in a GitHub repo and propose changes through pull requests.</li>
+        <li>GitHub Actions builds the static site and publishes it to GitHub Pages.</li>
+        <li>CLIR produces the official PDF. The site links to it and doesn't build its own.</li>
+        <li>Glossary terms, tools, and further reading live in data files (<code>glossary.yml</code>, <code>tools.yml</code>) and are written once, then reused across the site.</li>
+        <li>Static full-text search, no server needed.</li>
+        <li>Checklists save progress in the reader's own browser. We store no accounts or personal data.</li>
+        <li>Built and tested to WCAG 2.2 AA.</li>
+      </ul>
+    </aside>
+  </header>
+
+  <nav class="tabs" aria-label="Concepts">
+    <a href="#field-guide" data-tab="field-guide"><span>A</span>The Field Guide</a>
+    <a href="#cycle" data-tab="cycle"><span>B</span>The Cycle</a>
+    <a href="#pathfinder" data-tab="pathfinder"><span>C</span>Start Where You Are</a>
+    <a href="#compare" data-tab="compare"><span>↔</span>Compare &amp; decide</a>
+  </nav>
+
+  <!-- ================= A ================= -->
+  <section id="panel-field-guide" data-panel="field-guide">
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">Concept A · book first</div>
+        <h2>The Field Guide</h2>
+        <p>The online edition of the book. Readers move through chapters in order, with glossary definitions on hover, notes in the margin, checklists they can tick off as they read, and a clear "cite this" and PDF download. It reads as a CLIR publication.</p>
+      </div>
+      <div class="try"><strong>Try it:</strong> switch chapters in the left column, select the dotted <em>checksum</em> term, and tick a checklist item.</div>
+    </div>
+
+    <div class="frame">
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="url" id="fg-url">yourorg.github.io/digipres-toolkit/start-doing/check/</div></div>
+      <div class="viewport">
+        <div class="fg">
+          <div class="fg-top">
+            <div class="fg-brand"><i></i><div>Digital Preservation Toolkit<small>CLIR Pocket Burgundy</small></div></div>
+            <div class="fg-actions"><button class="fg-btn" type="button">Cite this</button><button class="fg-btn primary" type="button">PDF edition at CLIR</button></div>
+          </div>
+          <div class="fg-body">
+            <nav class="fg-toc" aria-label="Toolkit contents">
+              <input id="fg-search" type="search" placeholder="Search the toolkit" aria-label="Search the toolkit">
+              <ol>
+                <li><button type="button" data-ch="intro">Introduction</button></li>
+                <li class="part">Learn</li>
+                <li><button type="button" data-ch="learn">What is digital preservation?</button></li>
+                <li class="part">Get ready</li>
+                <li><button type="button" data-ch="ready">Risk management &amp; prioritization</button></li>
+                <li class="part">Start doing</li>
+                <li><button type="button" data-ch="check">Check</button></li>
+                <li class="part">Keep doing</li>
+                <li><button type="button" data-ch="integrity">Checking integrity over time</button></li>
+                <li class="part">Appendices</li>
+                <li><button type="button" data-ch="intro">Glossary</button></li>
+              </ol>
+            </nav>
+            <article class="fg-main" id="fg-main" aria-live="polite"></article>
+            <aside class="fg-side" id="fg-side"></aside>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div>
+        <h3>Best for</h3>
+        <ul>
+          <li>Readers who come from CLIR, a syllabus, or a citation and want the whole argument.</li>
+          <li>Instructors assigning a chapter by URL.</li>
+          <li>Staying closest to the version of record.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Tradeoffs</h3>
+        <ul>
+          <li>Newcomers in a hurry still have to find their own place in a long read.</li>
+          <li>Checklists sit inside chapters, so they are harder to use as a standalone worksheet.</li>
+          <li>Looks the most like other online books.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Build</h3>
+        <p>A Quarto book project. Quarto is one installed tool with no npm. It gives the book layout, footnotes, citations from Zotero, and cross-references out of the box. Without a PDF to make, Hugo could also build this concept, with a little more template work for margin notes.</p>
+        <div class="stack"><span>Quarto (pinned)</span><span>Zotero → .bib</span><span>GitHub Actions</span></div>
+        <div class="meter">
+          <b>Build effort</b><div class="pips" aria-label="1 of 4"><i class="on"></i><i></i><i></i><i></i></div>
+          <b>Author learning curve</b><div class="pips" aria-label="1 of 4"><i class="on"></i><i></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= B ================= -->
+  <section id="panel-cycle" data-panel="cycle" hidden>
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">Concept B · the model is the map</div>
+        <h2>The Cycle</h2>
+        <p>The home page is the toolkit's own five-stage cycle: Prepare, Curate, Check, Transfer, Save &amp; Maintain. Each stage opens a working page with its checklist, the tools for that step, and a link into the full chapter. The site's navigation follows the book's four phases (Learn, Get Ready, Start Doing, Keep Doing).</p>
+      </div>
+      <div class="try"><strong>Try it:</strong> click a stage on the cycle and tick a few items. Progress is kept per stage.</div>
+    </div>
+
+    <div class="frame">
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="url" id="cy-url">yourorg.github.io/digipres-toolkit/start-doing/</div></div>
+      <div class="viewport">
+        <div class="cy">
+          <div class="cy-top">
+            <div class="cy-logo">DigiPres <span>Toolkit</span></div>
+            <div class="cy-right">
+              <nav class="cy-nav" aria-label="Phases"><a href="#cycle">Learn</a><a href="#cycle">Get Ready</a><a class="on" href="#cycle">Start Doing</a><a href="#cycle">Keep Doing</a><a href="#cycle">Toolbox</a><a href="#cycle">Glossary</a></nav>
+              <input class="cy-search" id="cy-search" type="search" placeholder="Search (Pagefind)" aria-label="Search the toolkit">
+            </div>
+          </div>
+          <div class="cy-crumb" id="cy-crumb"><a href="#cycle">Home</a> › Start Doing</div>
+          <div class="cy-hero">
+            <h3>Digital preservation isn't a project with an end date. It's a cycle you keep moving through.</h3>
+            <p>You don't need a preservation department, a dedicated server room, or a budget line item to start protecting your digital collections.</p>
+          </div>
+          <div class="cy-grid">
+            <div class="cy-ring">
+              <svg viewBox="0 0 360 330" role="group" aria-label="Five-stage preservation cycle">
+                <circle cx="180" cy="165" r="112" fill="none" stroke="#c3d1da" stroke-width="2" stroke-dasharray="4 6"/>
+                <text x="180" y="160" text-anchor="middle" font-size="13" fill="#4f6170" font-style="italic">Repeat as new</text>
+                <text x="180" y="178" text-anchor="middle" font-size="13" fill="#4f6170" font-style="italic">content arrives</text>
+                <g id="cy-nodes"></g>
+              </svg>
+            </div>
+            <div class="cy-panel" id="cy-panel" aria-live="polite"></div>
+          </div>
+          <footer class="site-foot"><span><a href="#cycle">Edit this page on GitHub</a><a href="#cycle">Report a broken link</a></span><span>Last updated November 10, 2026 · Built with Hugo</span></footer>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div>
+        <h3>Best for</h3>
+        <ul>
+          <li>Practitioners who already decided to start and want to know what to do this week.</li>
+          <li>Workshops and trainings where the cycle diagram is the teaching tool.</li>
+          <li>Return visits: "where was I in the cycle?"</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Tradeoffs</h3>
+        <ul>
+          <li>The Learn and Get Ready chapters don't map to the five stages, so they need their own pages outside the cycle.</li>
+          <li>The cycle as drawn has five stages, while the "Start Doing" text describes four headings. The manuscript should settle on one.</li>
+          <li>The custom home page and stage templates take more design work.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Build</h3>
+        <p>Hugo, a single pinned binary with no package manager. Chapters are Markdown in <code>content/</code>. Each stage's checklist and tools live in <code>data/stages.yaml</code>, and a Hugo template draws the SVG cycle from it, so changing a stage updates the diagram, the stage page, and the printable worksheet. The checklists use about 100 lines of plain JavaScript and no libraries. Pagefind, also a standalone binary, indexes the built site for search.</p>
+        <div class="stack"><span>Hugo (pinned)</span><span>data/stages.yaml</span><span>Pagefind</span><span>plain JS</span></div>
+        <div class="meter">
+          <b>Build effort</b><div class="pips" aria-label="3 of 4"><i class="on"></i><i class="on"></i><i class="on"></i><i></i></div>
+          <b>Author learning curve</b><div class="pips" aria-label="2 of 4"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= C ================= -->
+  <section id="panel-pathfinder" data-panel="pathfinder" hidden>
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">Concept C · meet them where they are</div>
+        <h2>Start Where You Are</h2>
+        <p>Answer two questions first: what are you working with, and what can you put toward it? The site then shows a short, ordered path through the toolkit with the tools and storage that fit. It acts on the book's promise to "meet practitioners where they are." The three starting situations come from the manuscript's own example workflows.</p>
+      </div>
+      <div class="try"><strong>Try it:</strong> pick a situation and a resource level, and watch the path and storage advice change. Search the glossary on the right.</div>
+    </div>
+
+    <div class="frame">
+      <div class="bar"><div class="dots"><i></i><i></i><i></i></div><div class="url" id="pf-url">yourorg.github.io/digipres-toolkit/start/</div></div>
+      <div class="viewport">
+        <div class="pf">
+          <div class="pf-top">
+            <div class="pf-logo">Good is <em>good enough</em></div>
+            <div class="pf-right">
+              <nav aria-label="Toolkit sections"><a href="#pathfinder">Your path</a><a href="#pathfinder">Read the toolkit</a><a href="#pathfinder">Tools</a><a href="#pathfinder">Glossary</a></nav>
+              <input class="pf-search" id="pf-search" type="search" placeholder="Search (Pagefind)" aria-label="Search the toolkit">
+            </div>
+          </div>
+          <div class="pf-layout">
+            <div class="pf-main">
+              <h3>Start where you are.</h3>
+              <p class="pf-lede">Take the next step, whatever that looks like. Tell us a little about your situation and we'll point you to the parts of the toolkit that matter most right now.</p>
+
+              <p class="pf-q"><i>1</i>What are you working with?</p>
+              <div class="pf-cards" id="pf-situations"></div>
+
+              <p class="pf-q"><i>2</i>What can you put toward it?</p>
+              <div class="pf-chips" id="pf-levels"></div>
+
+              <div class="pf-path" aria-live="polite" id="pf-path"></div>
+            </div>
+            <aside class="pf-aside">
+              <div class="pf-box">
+                <h5>Glossary</h5>
+                <input id="pf-gsearch" type="search" placeholder="Search terms" aria-label="Search glossary terms">
+                <ul class="pf-gloss" id="pf-gloss"></ul>
+              </div>
+              <div class="pf-box">
+                <h5>Or read it straight through</h5>
+                <ul class="plain">
+                  <li>Learn: crash course</li>
+                  <li>Get ready</li>
+                  <li>Start doing</li>
+                  <li>Keep doing</li>
+                  <li>PDF edition at CLIR</li>
+                </ul>
+              </div>
+            </aside>
+          </div>
+          <footer class="site-foot"><span><a href="#pathfinder">Edit this page on GitHub</a><a href="#pathfinder">Suggest a tool</a></span><span>Last updated November 10, 2026 · Built with Hugo</span></footer>
+        </div>
+      </div>
+    </div>
+
+    <div class="notes">
+      <div>
+        <h3>Best for</h3>
+        <ul>
+          <li>The book's core audience: small, less-resourced organizations unsure where to begin.</li>
+          <li>Sharing a link that already fits someone's situation, like "here's your path."</li>
+          <li>Showing that you can start with no budget at all.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Tradeoffs</h3>
+        <ul>
+          <li>Someone has to write and maintain the path logic. It is new editorial content that isn't in the manuscript yet.</li>
+          <li>A path can feel like an answer key, so it needs clear "this is one route" framing.</li>
+          <li>The most custom build, and the most to test for accessibility.</li>
+        </ul>
+      </div>
+      <div>
+        <h3>Build</h3>
+        <p>Hugo, pinned, with Markdown chapters. <code>data/paths.yaml</code> maps each situation and resource level to an ordered list of chapter sections, tools, and storage options. Hugo writes every combination out as its own static page, such as <code>/start/legacy-media/no-budget/</code>, so paths work and can be shared without JavaScript. A little plain script only swaps between them in place. The glossary panel reads <code>data/glossary.yaml</code>.</p>
+        <div class="stack"><span>Hugo (pinned)</span><span>data/paths.yaml</span><span>data/glossary.yaml</span><span>Pagefind</span></div>
+        <div class="meter">
+          <b>Build effort</b><div class="pips" aria-label="4 of 4"><i class="on"></i><i class="on"></i><i class="on"></i><i class="on"></i></div>
+          <b>Author learning curve</b><div class="pips" aria-label="2 of 4"><i class="on"></i><i class="on"></i><i></i><i></i></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= Compare ================= -->
+  <section id="panel-compare" data-panel="compare" hidden>
+    <div class="concept-head">
+      <div>
+        <div class="eyebrow">Side by side</div>
+        <h2>Compare &amp; decide</h2>
+      </div>
+    </div>
+    <div class="tablewrap">
+      <table>
+        <thead><tr><th scope="col"></th><th scope="col">A · The Field Guide</th><th scope="col">B · The Cycle</th><th scope="col">C · Start Where You Are</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">First thing a visitor sees</th><td>Title, introduction, table of contents</td><td>The five-stage cycle</td><td>"What are you working with?"</td></tr>
+          <tr><th scope="row">Clean reading copy</th><td>Core of the design</td><td>Yes, under each phase</td><td>Yes, one click away</td></tr>
+          <tr><th scope="row">Interactive checklists</th><td>Inline in chapters</td><td>Front and center, per stage</td><td>Built into each path</td></tr>
+          <tr><th scope="row">Pathfinder by situation</th><td>Could add a short "where to start" page</td><td>Light: "jump to a stage"</td><td>Core of the design</td></tr>
+          <tr><th scope="row">Glossary &amp; tools</th><td>Hover definitions, appendix pages</td><td>Toolbox page, tools per stage</td><td>Searchable side panel, tools per path</td></tr>
+          <tr><th scope="row">New writing needed</th><td>None</td><td>Short stage summaries</td><td>Path logic and step blurbs</td></tr>
+          <tr><th scope="row">Generator</th><td>Quarto (single install, no npm)</td><td>Hugo (single Go binary)</td><td>Hugo (single Go binary)</td></tr>
+          <tr><th scope="row">JavaScript</th><td>Quarto's bundled Bootstrap and search</td><td>Hand-written, no libraries</td><td>Hand-written, no libraries</td></tr>
+          <tr><th scope="row">Rough build time</th><td>1–2 weeks</td><td>3–4 weeks</td><td>4–6 weeks</td></tr>
+          <tr><th scope="row">Risk</th><td>Low</td><td>Medium</td><td>Medium–high</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="rec">
+      <div class="eyebrow">A possible path</div>
+      <p>If the team picks <strong>A</strong> alone, Quarto is the quickest route. If <strong>B</strong> or <strong>C</strong> is where we want to end up, start in Hugo from day one: launch the chapters with a book-style layout first, then add the cycle or pathfinder home page as a second release on the same content. That avoids moving off Quarto-specific Markdown later.</p>
+    </div>
+
+    <div class="decide">
+      <div><h3>Branding</h3><p>Does CLIR require Pocket Burgundy branding on a companion site, or can it carry its own identity with a CLIR credit? Ask CLIR before visual design starts.</p></div>
+      <div><h3>Where it lives</h3><p>Which GitHub organization owns the repo, and do we want a custom domain instead of the <code>github.io</code> address?</p></div>
+      <div><h3>Version of record</h3><p>Is the CLIR PDF canonical, with the site as a living edition? If the site changes after publication, how do we label versions and cite them?</p></div>
+      <div><h3>Upkeep</h3><p>Who reviews pull requests after launch, and how often do we check links and tool listings? Tools "come and go," as the draft says.</p></div>
+    </div>
+  </section>
+</div>
+
+<script>
+(function(){
+  /* ---------- tabs ---------- */
+  const tabs=[...document.querySelectorAll('nav.tabs a')];
+  const panels=[...document.querySelectorAll('[data-panel]')];
+  function show(){
+    const id=(location.hash||'#field-guide').slice(1);
+    const valid=panels.some(p=>p.dataset.panel===id)?id:'field-guide';
+    panels.forEach(p=>p.hidden=p.dataset.panel!==valid);
+    tabs.forEach(t=>{ if(t.dataset.tab===valid) t.setAttribute('aria-current','page'); else t.removeAttribute('aria-current'); });
+  }
+  window.addEventListener('hashchange',show); show();
+
+  /* ---------- A: Field Guide ---------- */
+  const term=(t,def,src)=>`<button type="button" class="fg-term" data-def="${def}" data-src="${src}">${t}</button>`;
+  const CH={
+    intro:{url:'',crumb:'Introduction',title:'A toolkit for organizations with limited resources',
+      body:`<p>For those working in cultural memory, the prospect of engaging in digital preservation is often seen as an overwhelming and expensive endeavor. But in reality, the goals can be achieved with some additional skills, limited budgets, and collaborative effort.</p>
+      <p>This toolkit is a supportive guide that is intended to meet practitioners where they are, encourage them to take the next step, whatever that looks like, and celebrate accomplishments big and small.</p>
+      <p>This is accomplished by introducing good practice (rather than <em>best</em> practice) and appropriately scaling preservation for all organizations, <em>especially</em> small, less-resourced ones.</p>`,
+      side:`<p>Read online, get the PDF edition from CLIR, or jump to the glossary. Every section has its own link you can share.</p>`},
+    learn:{url:'learn/what-is-digital-preservation/',crumb:'Learn · Crash course',title:'What is digital preservation?',
+      body:`<p>According to the Digital Preservation Coalition's <em>Digital Preservation Handbook</em>, digital preservation is "the series of managed activities necessary to ensure long term access of digital materials for as long as necessary."<sup>1</sup></p>
+      <p>First, let's consider "the series of managed activities." In this sense, digital preservation shouldn't be treated as a sort of "one off" or "set it and forget it" process. Rather, it requires proactive strategies, future-oriented thinking, and a commitment to long-term maintenance work.</p>
+      <p>The final part of our definition, "for as long as necessary," suggests that preservation might not mean forever! Knowing how long we must preserve content, and making a plan for its eventual ${term('disposition',"Materials' final destruction or transfer to an archives as determined by their appraisal.",'SAA Dictionary')}, allows us to more wisely allocate the limited resources we have.</p>`,
+      side:`<p><sup>1</sup> Digital Preservation Coalition, <em>Digital Preservation Handbook</em>.</p><p>Footnotes appear in the margin on wide screens and below the text on phones.</p>`},
+    ready:{url:'ready/risk-management/',crumb:'Get ready',title:'Risk management and prioritization',
+      body:`<p>All those engaged in collecting work struggle with limited resources, knowing that some collections will need to be left vulnerable. Good practice involves understanding the capabilities of the stewarding organization and building an appropriate strategy to meet its needs.</p>
+      <p>Digital preservation is an <strong>insurance policy</strong> for your digital materials and the resources previously allocated to create and maintain them. Just like homeowners or auto insurance, we hope we never need to use it, but when disaster strikes, we're grateful for having the protection.</p>`,
+      side:`<p><b>Related tools</b><br>NDSA Levels of Digital Preservation<br>DPC Rapid Assessment Model</p>`},
+    check:{url:'start-doing/check/',crumb:'Start doing · Stage 3 of 5',title:'Check',
+      body:`<p>Before you commit incoming files to your system, check that they are what they claim to be, and that you'll be able to tell later if something changes.</p>
+      <p>Run a ${term('checksum','A unique numerical signature derived from a file. Used to compare copies.','DPC Glossary')}. Think of it as a digital fingerprint. If the file changes or becomes corrupted, its checksum changes too, which is how you'll know something went wrong. If your files don't already have one, create one now; that becomes your baseline for every future check.</p>
+      <div class="fg-check" role="group" aria-label="Check stage checklist">
+        <div class="fg-check-head">Checklist: Check<span id="fg-count">0 of 4</span></div>
+        <label><input type="checkbox" id="fg-c1">Check for and remove duplicate files</label>
+        <label><input type="checkbox" id="fg-c2">Populate your inventory</label>
+        <label><input type="checkbox" id="fg-c3">Run a checksum and record it as your baseline</label>
+        <label><input type="checkbox" id="fg-c4">Rename files according to your naming convention</label>
+      </div>
+      <h4>Tips for file naming</h4>
+      <p>Decide on a naming convention before files arrive, and apply it consistently. Consistency matters more than the specific scheme you choose. Whatever you decided, <strong>document it!</strong></p>`,
+      side:`<p><b>Tools for this step</b><br>DupeGuru · TreeSize Pro<br>Checksum by Corz · Fixity Pro<br>7Zip · BagIt · DART · DROID</p><div class="fg-cite"><b>Cite this section</b><br><code>Digital Preservation Toolkit, "Check." CLIR, 2026.</code></div>`},
+    integrity:{url:'keep-doing/checking-integrity/',crumb:'Keep doing',title:'Checking integrity over time',
+      body:`<p>A digital preservation program should not just generate checksums for files once, but verify their integrity repeatedly to understand the nature of the files over time.</p>
+      <p>Even a single flipped bit, known as ${term('bit rot','The corruption of the lowest level of digital data.','SAA Dictionary')}, can have dramatic impacts on the renderability and usability of digital content.</p>`,
+      side:`<p><b>Fixity tools</b><br>Command line · cross-platform GUI · Windows GUI · Mac GUI, each with links and notes.</p>`}
+  };
+  const order=['intro','learn','ready','check','integrity'];
+  const fgMain=document.getElementById('fg-main'), fgSide=document.getElementById('fg-side'), fgUrl=document.getElementById('fg-url');
+  function fgShow(k){
+    const c=CH[k]; const i=order.indexOf(k);
+    const prev=order[i-1], next=order[i+1];
+    fgMain.innerHTML=`<div class="fg-crumb">${c.crumb}</div><h3>${c.title}</h3>${c.body}
+      <div class="fg-pager">${prev?`<button type="button" data-go="${prev}">← ${CH[prev].title}</button>`:'<span></span>'}${next?`<button type="button" data-go="${next}">${CH[next].title} →</button>`:''}</div>`;
+    fgSide.innerHTML=c.side;
+    fgUrl.textContent='yourorg.github.io/digipres-toolkit/'+c.url;
+    document.querySelectorAll('.fg-toc button').forEach(b=>b.setAttribute('aria-current',b.dataset.ch===k&&b.textContent!=='Glossary'?'true':'false'));
+    const boxes=[...fgMain.querySelectorAll('.fg-check input')];
+    const upd=()=>{const n=boxes.filter(b=>b.checked).length;const el=document.getElementById('fg-count');if(el)el.textContent=n+' of '+boxes.length;};
+    boxes.forEach(b=>b.addEventListener('change',upd));
+  }
+  document.querySelector('.fg-toc').addEventListener('click',e=>{const b=e.target.closest('button[data-ch]');if(b)fgShow(b.dataset.ch);});
+  fgMain.addEventListener('click',e=>{
+    const g=e.target.closest('[data-go]'); if(g){fgShow(g.dataset.go);return;}
+    const t=e.target.closest('.fg-term');
+    document.querySelectorAll('.fg-pop').forEach(p=>p.remove());
+    if(t && !t.dataset.open){
+      const p=document.createElement('span'); p.className='fg-pop'; p.setAttribute('role','tooltip');
+      p.innerHTML=`<b>${t.dataset.src}</b>${t.dataset.def}<br><span style="color:#7d1f3e;font-weight:600">See full glossary entry →</span>`;
+      t.appendChild(p); t.dataset.open='1';
+    } else if(t){ delete t.dataset.open; }
+    document.querySelectorAll('.fg-term').forEach(x=>{ if(x!==t) delete x.dataset.open; });
+  });
+  fgShow('check');
+
+  /* ---------- B: Cycle ---------- */
+  const STAGES=[
+    {k:'prep',slug:'prepare',name:'Prepare',sub:'Plan and gather',x:180,y:53,lead:'A little preparation now saves a lot of trouble later. Before you accept your first transfer, make sure you have:',
+      items:['A clean machine, used only for preservation work','A write blocker for copying files off old media','Up-to-date virus and malware scanning','An inventory: collection, creator, accession number, dates, extent, formats'],
+      tools:['DROID','DART','TreeSize Pro']},
+    {k:'cur',slug:'curate',name:'Curate',sub:'Select and organize',x:287,y:130,lead:'Not everything needs to be saved, or saved forever. Decide, on purpose, what you are keeping and for how long.',
+      items:['Know whether material is digitized or born-digital','Keep material only as long as it has ongoing value','Write your decision down, even one line','Create a copy before you touch the originals'],
+      tools:['Selection Framework','Write blocker']},
+    {k:'chk',slug:'check',name:'Check',sub:'Verify integrity',x:246,y:256,lead:'Check that files are what they claim to be, and that you will be able to tell later if something changes.',
+      items:['Check for and remove duplicate files','Populate your inventory','Run a checksum to set your baseline','Normalize formats where needed','Rename files to your naming convention'],
+      tools:['DupeGuru','Checksum by Corz','Fixity Pro','7Zip','BagIt']},
+    {k:'tra',slug:'transfer',name:'Transfer',sub:'Copy to storage',x:114,y:256,lead:'With files checked and cleaned up, move them into your official system.',
+      items:['Assign a dedicated storage location and record the file path','Make a working copy or disk image, and keep the original untouched','Bag your content so it moves as one package'],
+      tools:['TeraCopy','DART','Bagger']},
+    {k:'sav',slug:'save-and-maintain',name:'Save & Maintain',sub:'Back up and monitor',x:73,y:130,lead:'Storage is where "done" becomes "ongoing." Combine a few options so no single failure, theft, or disaster can take everything at once.',
+      items:['3 copies of your files','on 2 different storage media','with 1 copy off-site','Re-run checksums at least once a year','Write down who is responsible for each task'],
+      tools:['Fixity Pro','APTrust','MDPN','Cloud storage']}
+  ];
+  const done={}; STAGES.forEach(s=>done[s.k]=new Set());
+  const nodes=document.getElementById('cy-nodes'), panel=document.getElementById('cy-panel');
+  const cyRoot=document.querySelector('.cy');
+  const col=k=>getComputedStyle(cyRoot).getPropertyValue('--'+k).trim();
+  let cur='chk';
+  function drawNodes(){
+    nodes.innerHTML=STAGES.map((s,i)=>{
+      const n=done[s.k].size, tot=s.items.length, w=s.name.length>10?124:104;
+      return `<g class="node${s.k===cur?' on':''}" data-k="${s.k}" tabindex="0" role="button" aria-label="Stage ${i+1}: ${s.name}, ${n} of ${tot} done" aria-pressed="${s.k===cur}">
+        <rect class="halo" x="${s.x-w/2-4}" y="${s.y-26}" width="${w+8}" height="52" rx="12" fill="none" stroke="none"/>
+        <rect x="${s.x-w/2}" y="${s.y-22}" width="${w}" height="44" rx="9" fill="${col(s.k)}"/>
+        <text x="${s.x}" y="${s.y-2}" text-anchor="middle" fill="#fff" font-weight="700" font-size="14">${s.name}</text>
+        <text x="${s.x}" y="${s.y+14}" text-anchor="middle" fill="#fff" font-size="11" opacity=".92">${n?n+' of '+tot+' done':s.sub}</text>
+        <circle cx="${s.x-w/2+2}" cy="${s.y-20}" r="10" fill="#fff" stroke="${col(s.k)}" stroke-width="2"/>
+        <text x="${s.x-w/2+2}" y="${s.y-16}" text-anchor="middle" font-size="11" font-weight="700" fill="${col(s.k)}">${i+1}</text>
+      </g>`;}).join('');
+  }
+  function drawPanel(){
+    const i=STAGES.findIndex(s=>s.k===cur), s=STAGES[i], n=done[s.k].size, tot=s.items.length;
+    panel.style.setProperty('--stage',col(s.k));
+    panel.innerHTML=`<div class="num">Stage ${i+1} of 5</div><h4>${s.name}</h4><p>${s.lead}</p>
+      <div class="cy-prog"><span>${n} of ${tot}</span><div class="track"><div class="fill" style="width:${n/tot*100}%"></div></div></div>
+      <ul class="cy-list">${s.items.map((it,j)=>`<li><label><input type="checkbox" id="cy-${s.k}-${j}" data-j="${j}" ${done[s.k].has(j)?'checked':''}>${it}</label></li>`).join('')}</ul>
+      <div class="cy-tools"><b>Tools</b>${s.tools.map(t=>`<span>${t}</span>`).join('')}</div>
+      <div class="cy-more"><a href="#cycle">Read the full chapter →</a><a href="#cycle">Printable worksheet</a></div>
+      <div class="cy-note">Progress is saved in this browser only. Without JavaScript, each stage on the cycle is a plain link to its own page.</div>`;
+    document.getElementById('cy-url').textContent='yourorg.github.io/digipres-toolkit/start-doing/'+s.slug+'/';
+    document.getElementById('cy-crumb').innerHTML=`<a href="#cycle">Home</a> › <a href="#cycle">Start Doing</a> › ${s.name}`;
+  }
+  nodes.addEventListener('click',e=>{const g=e.target.closest('.node');if(g){cur=g.dataset.k;drawNodes();drawPanel();}});
+  nodes.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){const g=e.target.closest('.node');if(g){e.preventDefault();cur=g.dataset.k;drawNodes();drawPanel();nodes.querySelector(`[data-k="${cur}"]`).focus();}}});
+  panel.addEventListener('change',e=>{const j=+e.target.dataset.j;const set=done[cur];e.target.checked?set.add(j):set.delete(j);drawNodes();
+    const n=set.size,tot=STAGES.find(s=>s.k===cur).items.length;panel.querySelector('.cy-prog span').textContent=n+' of '+tot;panel.querySelector('.fill').style.width=(n/tot*100)+'%';});
+  done.prep.add(0); done.prep.add(2); done.cur.add(0); done.chk.add(1);
+  drawNodes(); drawPanel();
+
+  /* ---------- C: Pathfinder ---------- */
+  const SIT=[
+    {k:'legacy',slug:'legacy-media',t:'A box of legacy media',d:'Floppies, CDs, or old drives, contents unknown',
+      steps:[['Find out what you have','List each item in a spreadsheet before you open anything.',['Spreadsheet'],'Prepare'],
+             ['Set up a safe workspace','A clean machine and a write blocker protect the originals.',['Write blocker','Virus scan'],'Prepare'],
+             ['Migrate the media','Copy files off the old media and verify the copy.',['TeraCopy'],'Curate'],
+             ['Decide what to keep','Not everything on the disk is in scope. Write the decision down.',[],'Curate'],
+             ['Store and validate','',['DART','Bagger'],'Transfer']]},
+    {k:'digitized',slug:'digitization',t:'Decades of digitization',d:'Scans and audio from past projects, spread across drives',
+      steps:[['Inventory what exists','Identify formats and find duplicates across old project folders.',['DROID','TreeSize Pro'],'Prepare'],
+             ['Remove duplicates','Stop paying to store the same scan three times.',['DupeGuru'],'Check'],
+             ['Create baseline checksums','Your fingerprint for every future check.',['Checksum by Corz'],'Check'],
+             ['Package and transfer','Move it as one validated package.',['DART'],'Transfer'],
+             ['Store and validate','',['Checksum by Corz'],'Save & Maintain']]},
+    {k:'borndigital',slug:'born-digital',t:'A unique born-digital collection',d:'Highly valued files with no analog original',
+      steps:[['Make a copy first','Protect creation and modified dates, which matter for authenticity.',['Write blocker'],'Curate'],
+             ['Identify formats','Know what you have before you plan migrations.',['DROID'],'Prepare'],
+             ['Bag and checksum','Bagging bundles files with their checksums.',['Bagger','BagIt'],'Check'],
+             ['Store and validate','',['Bagger'],'Transfer'],
+             ['Plan for reappraisal','Revisit the collection as formats and policies change.',[],'Keep doing']]}
+  ];
+  const LVL=[
+    {k:'none',slug:'no-budget',t:'No budget, some staff time',store:['Local server','External drive swapped with a partner institution'],copies:'2 copies to start; add a third when you can.'},
+    {k:'small',slug:'small-budget',t:'A small budget',store:['Local server','External drive','Cloud storage (e.g. Glacier, Wasabi)'],copies:'3 copies, 2 media, 1 off-site. You meet the 3-2-1 rule.'},
+    {k:'it',slug:'it-or-consortium',t:'IT support or a consortium',store:['Local server','Preservation network (e.g. APTrust, MDPN)','Cloud storage'],copies:'3+ copies with automatic fixity checks and repair.'}
+  ];
+  let sit='legacy', lvl='none';
+  const sitEl=document.getElementById('pf-situations'), lvlEl=document.getElementById('pf-levels'), pathEl=document.getElementById('pf-path');
+  function pfDraw(){
+    sitEl.innerHTML=SIT.map(s=>`<button type="button" class="pf-card" data-s="${s.k}" aria-pressed="${s.k===sit}"><strong>${s.t}</strong><span>${s.d}</span></button>`).join('');
+    lvlEl.innerHTML=LVL.map(l=>`<button type="button" class="pf-chip" data-l="${l.k}" aria-pressed="${l.k===lvl}">${l.t}</button>`).join('');
+    const S=SIT.find(s=>s.k===sit), L=LVL.find(l=>l.k===lvl);
+    pathEl.innerHTML=`<div class="pf-path-head"><h4>Your path: ${S.t.toLowerCase()}</h4><span>${S.steps.length} steps · about a week of part-time work</span></div>
+      <ol class="pf-steps">${S.steps.map(([h,p,tools,ch],i)=>{
+        const last=i===S.steps.length-1 && h==='Store and validate';
+        const desc= last ? L.copies : p;
+        const st= last ? L.store.map(x=>`<span class="store">${x}</span>`).join('') : '';
+        return `<li><div><b>${h}</b><p>${desc}</p><div class="pf-tags">${tools.map(t=>`<span>${t}</span>`).join('')}${st}<a href="#pathfinder">Read: ${ch} →</a></div></div></li>`;}).join('')}</ol>
+      <div class="pf-good"><strong>Good is good enough for now.</strong> Start with what you have, then take the next step. You can come back and change your answers any time.</div>`;
+    document.getElementById('pf-url').textContent='yourorg.github.io/digipres-toolkit/start/'+S.slug+'/'+L.slug+'/';
+  }
+  sitEl.addEventListener('click',e=>{const b=e.target.closest('[data-s]');if(b){sit=b.dataset.s;pfDraw();sitEl.querySelector(`[data-s="${sit}"]`).focus();}});
+  lvlEl.addEventListener('click',e=>{const b=e.target.closest('[data-l]');if(b){lvl=b.dataset.l;pfDraw();lvlEl.querySelector(`[data-l="${lvl}"]`).focus();}});
+  pfDraw();
+
+  const GL=[
+    ['Appraisal','The process of identifying materials offered to an archives that have sufficient value to be accessioned.','SAA'],
+    ['Bit rot','The corruption of the lowest level of digital data.','SAA'],
+    ['Born digital','Originating in a computer environment.','SAA'],
+    ['Checksum','A unique numerical signature derived from a file. Used to compare copies.','DPC'],
+    ['Disposition',"Materials' final destruction or transfer to an archives as determined by their appraisal.",'SAA'],
+    ['Migration','A means of overcoming technological obsolescence by transferring digital resources from one hardware/software generation to the next.','DPC'],
+    ['PREMIS','Preservation Metadata: Implementation Strategies. A de facto standard for digital preservation metadata.','DPC'],
+    ['Reappraisal','The process of identifying materials that no longer merit inclusion in an archives and that are candidates for deaccessioning.','SAA']
+  ];
+  const gEl=document.getElementById('pf-gloss'), gIn=document.getElementById('pf-gsearch');
+  function gDraw(){const q=gIn.value.trim().toLowerCase();
+    const rows=GL.filter(([t,d])=>!q||t.toLowerCase().includes(q)||d.toLowerCase().includes(q));
+    gEl.innerHTML=rows.length?rows.map(([t,d,s])=>`<li><b>${t}</b>${d} <small>${s}</small></li>`).join(''):'<li>No terms match. Try "checksum" or "rot".</li>';}
+  gIn.addEventListener('input',gDraw); gDraw();
+})();
+</script>
