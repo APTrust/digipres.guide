@@ -1,0 +1,9 @@
+{{/*
+  Reading aids for toolkit text: the glossary side panel (with glossary terms
+  linked from the text) and interactive checklists. Both are added by
+  JavaScript; without it, readers get the plain text and the /glossary/ page.
+*/}}
+{{ partial "glossary-panel.html" . }}
+{{ with resources.Get "js/checklists.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}

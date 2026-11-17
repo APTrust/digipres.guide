@@ -67,10 +67,10 @@ gantt
 | --- | --- | --- | --- | --- |
 | ✅ Done (Nov 17) | 0. Setup | Nov 23 to 25 | Repo in the APTrust org, pinned Hugo, Actions deploy to Pages, `digipres.guide` DNS and HTTPS. Code licensed GPL-3.0-or-later; the content license is still an open question. | |
 | ✅ Done (Nov 17) | 1. Draft import and data files | Nov 30 to Dec 11 | ✅ Converter from the path data sheet to `paths.yaml`, `tools.yaml`, `storage.yaml`, and `sections.yaml`, plus placeholder pages for every section. ✅ `glossary.yaml` from the Nov 10 draft. ✅ Import script (pandoc) turns the Nov 10 draft into 36 pages, kept private until launch (see [Keeping the toolkit text private](#keeping-the-toolkit-text-private)). | Path data template goes to the team in Phase 0 |
-| ⬜ Not started | 2. Design and templates | Dec 7 to 18 | Theme, section pages, glossary, tools directory, checklists, search, feedback form | Decisions and CLIR branding answer by **Dec 4** |
+| 🔄 Started early | 2. Design and templates | Dec 7 to 18 | ✅ Theme (our own identity with a CLIR credit; all colors and fonts are tokens at the top of `main.css`), phase pages, about, credits, and privacy page. ✅ Interactive checklists and a printable `/checklists/` worksheet. ✅ Glossary side panel, with terms linked from the text. ✅ Tools filters. ✅ Search page. ✅ Feedback page, waiting on the Google Form's IDs. ⬜ CLIR branding, once CLIR answers. See [Follow-ups from Phase 2](#follow-ups-from-phase-2). | Decisions and CLIR branding answer by **Dec 4** |
 | | Winter break | Dec 21 to Jan 1 | | Path data due **Dec 18** · Final manuscript due **Dec 15** |
-| ⬜ Not started | 3a. Final manuscript import | Jan 4 to 8 | Re-run the import and the glossary import on the final .docx, privately | |
-| 🔄 Started early | 3b. Pathfinder | Jan 11 to 29 | ✅ First version built from the draft path data (see [Path data](#path-data)). ⬜ Re-run with the team's reviewed sheet, refinements, and Matomo events. | URL list to CLIR by **Jan 15** |
+| ⬜ Not started | 3a. Final manuscript import | Jan 4 to 8 | Re-run the import and the glossary import on the final .docx, privately. Add the project collaborators to the about and credits page (`content/about.md`). | |
+| 🔄 Started early | 3b. Pathfinder | Jan 11 to 29 | ✅ First version built from the draft path data (see [Path data](#path-data)). ⬜ Re-run with the team's reviewed sheet, and refinements. ✅ Matomo tracker added (see [Analytics](#analytics)). Every answer loads its own page, so page views count path choices without extra events. | URL list to CLIR by **Jan 15** |
 | ⬜ Not started | 4. Accessibility and testing | Feb 1 to 12 | WCAG 2.2 AA audit, keyboard and screen reader passes, a few practitioner walkthroughs | Section authors' review done by **Jan 22** |
 | ⬜ Not started | Launch | Week of Feb 15 | Publish the toolkit text (import with `--out content`), set `launched = true`, show only Approved paths, tag v1.0, announce | |
 
@@ -116,6 +116,13 @@ Which situations appear depends on their Status. Before launch, everything excep
 - [ ] Tools tab: check URLs and notes for the tools you know.
 - [ ] CLIR: whether Pocket Burgundy branding is required.
 - [ ] A content license (for example, CC BY 4.0).
+
+### Follow-ups from Phase 2
+
+- [ ] **Glossary links:** after the final import, read through the linked terms on each phase page. Linking matches each term's text, so it can catch a term inside a longer name (for example, "Digital Preservation" inside "Digital Preservation Coalition"). Fix false matches in `assets/js/glossary.js` or reword the term list.
+- [ ] **Path data sheet, Tools tab:** the virus scanner's "Used for" is "Prepare", a workflow stage rather than a task, so "Prepare" shows up as a task in the tools filter. Change it (for example, to "Virus scanning") and re-run the converter.
+- [ ] **Feedback form spam field:** once the Google Form exists, submit the site's form with JavaScript turned off and check that Google accepts the extra hidden `website` (honeypot) field. If it doesn't, remove the field's `name` and rely on the JavaScript check only.
+- [ ] **About and credits page:** add the project collaborators (Phase 3a).
 
 ## Final manuscript import
 
@@ -180,6 +187,24 @@ Privacy settings:
 For research, the report is aggregate counts per situation, per level, and per combination over time. If the results will be published, check with the relevant IRB early on whether aggregate, anonymized web analytics need a determination.
 
 Nathan's personal Matomo instance will be used. If needed, the data can be exported and migrated. Alternatively, could use UVA Library's Matomo instance.
+
+**Status (Nov 17):** the tracker is on the site (`assets/js/analytics.js`, configured under `params.matomo` in `hugo.toml`, site ID 7). It is cookieless, honors Do Not Track, records page addresses without query strings (so search terms never reach Matomo), and skips the short section addresses that forward to phase pages. It loads only in production builds, so the preview site at `digipres.guide` is counted from now on; local previews aren't.
+
+Matomo events show which features readers use. They carry fixed values only, never anything a reader types:
+
+| Category | Action | Name |
+| --- | --- | --- |
+| Pathfinder | Show path, or Change answers (from a path page) | `situation/level` |
+| Glossary | Open term, or Open panel | the term's ID |
+| Checklist | Tick, Untick, Clear, Print worksheet | the section, such as `curate/check` |
+| Tools | Filter | `task:checksums`, `platform:mac`, or `free` |
+| Search | Search | none: once per page view, and the search terms are never sent |
+| Feedback | Sent | none |
+
+A Pathfinder event can be lost if the reader answers before Matomo finishes loading, because the browser moves straight to the path page. The path page's own view is always counted, so use page views for path counts and events for how readers got there.
+
+- [x] In Matomo's settings: IPs anonymized to 2 bytes (also used for location lookups), and raw logs deleted after 395 days (about 13 months). Both are instance-wide settings, done Nov 17.
+- [ ] Decide whether to filter out visits from before launch in the research report (or exclude the team's own visits).
 
 ## Domain
 

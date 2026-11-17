@@ -7,11 +7,13 @@
     <p>This section is part of the <a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a> page. <a href="{{ $to }}">Go to “{{ .Title }}”</a>.</p>
   </div>
 {{ else }}
-  <article class="prose"{{ if not .Params.stub }} data-pagefind-body{{ end }}>
+  {{ $toolkit := in (slice "/introduction/" "/conclusion/") .RelPermalink }}
+  <article class="prose"{{ if not .Params.stub }} data-pagefind-body{{ end }}{{ if $toolkit }} data-glossary-scope{{ end }} data-checklist="{{ strings.Trim .RelPermalink "/" }}">
     {{ with .Parent }}{{ if not .IsHome }}<p class="eyebrow"><a href="{{ .RelPermalink }}">{{ .Title }}</a></p>{{ end }}{{ end }}
     <h1>{{ .Title }}</h1>
     {{ .Content }}
     {{ partial "reading-pager.html" . }}
   </article>
+  {{ if or $toolkit (strings.Contains .Content "class=\"checklist\"") }}{{ partial "reading-tools.html" . }}{{ end }}
 {{ end }}
 {{ end }}

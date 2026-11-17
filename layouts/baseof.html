@@ -3,7 +3,7 @@
 <head>
   {{ partial "head.html" . }}
 </head>
-<body>
+<body{{ if in site.Params.phases .Section }} class="phase-{{ .Section }}"{{ end }}{{ with site.GetPage "/checklists" }} data-worksheet="{{ .RelPermalink }}"{{ end }}>
   <a class="skip-link" href="#main">Skip to main content</a>
   {{ partial "header.html" . }}
   <main id="main" tabindex="-1">

@@ -1,0 +1,22 @@
+{{/*
+  The glossary as JSON, for the side panel and the term links:
+  {"page": "/glossary/", "terms": [{"id", "term", "definitions": [{"html", "source", "url"}]}]}
+  Returns the resource (built once, then cached).
+*/}}
+{{ $g := hugo.Data.glossary }}
+{{ $terms := slice }}
+{{ range $g.terms }}
+  {{ $term := .term }}
+  {{ $defs := slice }}
+  {{ range .definitions }}
+    {{ $src := index $g.sources .source }}
+    {{ if not $src }}{{ errorf "Glossary term %q cites source %q, which isn't in data/glossary.yaml sources" $term .source }}{{ end }}
+    {{ $defs = $defs | append (dict "html" (.text | markdownify | string) "source" $src.short "url" (.url | default $src.url)) }}
+  {{ end }}
+  {{ $terms = $terms | append (dict "id" .id "term" .term "definitions" $defs) }}
+{{ end }}
+{{ $page := "" }}
+{{ with site.GetPage "/glossary" }}{{ $page = .RelPermalink }}{{ end }}
+{{ $json := dict "page" $page "terms" $terms | jsonify }}
+{{ $r := resources.FromString "glossary.json" $json | fingerprint }}
+{{ return $r }}

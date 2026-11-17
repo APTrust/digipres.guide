@@ -1,0 +1,23 @@
+{{/*
+  The glossary side panel. Its terms load from a JSON file the first time it
+  opens. glossary.js opens it from glossary terms linked in the text and from
+  any [data-glossary-open] button.
+*/}}
+{{ $data := partialCached "glossary-json.html" . }}
+{{ $page := site.GetPage "/glossary" }}
+<dialog class="glossary-panel" id="glossary-panel" aria-labelledby="glossary-panel-title" data-src="{{ $data.RelPermalink }}" data-pagefind-ignore>
+  <div class="gp-head">
+    <h2 id="glossary-panel-title">Glossary</h2>
+    <button type="button" class="gp-close" data-glossary-close aria-label="Close glossary">×</button>
+  </div>
+  <div class="gp-search">
+    <label for="gp-filter">Find a term</label>
+    <input id="gp-filter" type="search" autocomplete="off" spellcheck="false">
+  </div>
+  <p class="gp-status" role="status" aria-live="polite"></p>
+  <div class="gp-list"></div>
+  {{ with $page }}<p class="gp-foot"><a href="{{ .RelPermalink }}">Open the full glossary</a></p>{{ end }}
+</dialog>
+{{ with resources.Get "js/glossary.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}

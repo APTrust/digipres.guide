@@ -116,9 +116,40 @@ def clean(text, stats):
 
     text = re.sub(r'<img src="([^"]+)"[^>]*/?>', img, text)
     lines = [l for l in text.split("\n") if l.strip() not in ("\\", "-")]  # Word page-break leftovers
-    text = "\n".join(lines)
+    text = "\n".join(checklists(lines, stats))
     text = re.sub(r"[ \t]+\n", "\n", text)
     return re.sub(r"\n{3,}", "\n\n", text).strip()
+
+
+def checklists(lines, stats):
+    """The draft sets checklists and tips as quoted paragraphs that start with
+    "☐" or "•". A quote made only of ☐ items becomes a task list with the
+    .checklist class (interactive on the site, see assets/js/checklists.js);
+    "•" items inside a quote become an ordinary list in that quote."""
+    out, run = [], []
+
+    def flush():
+        items = [l.lstrip(">").strip() for l in run]
+        filled = [i for i in items if i]
+        if filled and all(i.startswith("☐") for i in filled):
+            stats["checklists"] += 1
+            # "*" rather than "-", so a list just before it can't absorb it.
+            out.extend(f"* [ ] {i.lstrip('☐').strip()}" for i in filled)
+            out.append("{.checklist}")
+        else:
+            out.extend(re.sub(r"^>\s*•\s*", "> - ", l) for l in run)
+        run.clear()
+
+    for line in lines:
+        if line.startswith(">"):
+            run.append(line)
+            continue
+        if run:
+            flush()
+        out.append(line)
+    if run:
+        flush()
+    return out
 
 
 def split_footnotes(md):
@@ -234,7 +265,7 @@ def main(argv):
         if media_dir.exists():
             shutil.rmtree(media_dir)
 
-        stats = {"highlights": 0, "images": []}
+        stats = {"highlights": 0, "images": [], "checklists": 0}
         written = []
         for weight, pid in enumerate(order, start=1):
             page = pages[pid]
@@ -283,6 +314,8 @@ def main(argv):
         print(f"note: removed Word highlighting from {stats['highlights']} passage(s)")
     if stats["images"]:
         print(f"note: {len(stats['images'])} figure(s) have no alt text yet")
+    if stats["checklists"]:
+        print(f"note: made {stats['checklists']} checklist(s) from ☐ items")
     for u in unmapped:
         print(f"note: subheading kept inside {u}")
 

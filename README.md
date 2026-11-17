@@ -25,8 +25,8 @@ The website presents the same content in a form people can use while they work. 
 | [`scripts/convert_path_data.py`](scripts/convert_path_data.py) | Converts the path data sheet (.xlsx) into the files in `data/` and checks every reference |
 | [`scripts/import_manuscript.py`](scripts/import_manuscript.py) | Imports the manuscript (.docx) into one page per section, in `private/` until launch. Needs pandoc. |
 | [`scripts/import_glossary.py`](scripts/import_glossary.py) | Imports the glossary appendix from a manuscript draft (.docx) into `data/glossary.yaml`. Needs pandoc. |
-| `layouts/`, `assets/` | Hugo templates, CSS, and the pathfinder's small script. The CSS is a placeholder until the design phase. |
-| `hugo.toml` | Site settings, including the `launched` switch |
+| `layouts/`, `assets/` | Hugo templates, the stylesheet (`assets/css/main.css`, with every color and font as a token at the top), and small hand-written scripts in `assets/js/`: the pathfinder, checklists, glossary panel, tools filters, search, and feedback form |
+| `hugo.toml` | Site settings: the `launched` switch, CLIR's PDF link, the feedback form's Google Form IDs, and which paths to show |
 
 Manuscript drafts are kept in `content-drafts/`, and their imported text in `private/`. Git ignores both folders, so the toolkit text isn't published in this repository until launch.
 
@@ -35,10 +35,14 @@ Manuscript drafts are kept in `content-drafts/`, and their imported text in `pri
 - **[Hugo](https://gohugo.io/)** builds the static site. GitHub Actions uses one pinned version of Hugo, and the site is published on GitHub Pages.
 - **Content** is plain Markdown, one page per toolkit section, imported from the manuscript with pandoc.
 - **Path data** is edited by the team in a Google Sheet. A converter turns it into YAML files in `data/`, and the build fails if a path points to a section, tool, or level that doesn't exist.
-- **Search** uses [Pagefind](https://pagefind.app/).
+- **Search** uses [Pagefind](https://pagefind.app/), at `/search/`, with our own small results page.
+- **Checklists:** the import turns the manuscript's ☐ items into checklists that readers can tick off. Progress is saved in the reader's own browser, never sent anywhere. `/checklists/` gathers every checklist on one printable worksheet.
+- **Glossary:** the first use of each glossary term in a section links to its definition, which opens in a searchable side panel. The full glossary is at `/glossary/`.
+- **Tools** at `/tools/` can be filtered by task, platform, and cost. Each tool lists the toolkit sections whose path steps name it.
+- **Feedback** at `/feedback/` posts to a Google Form held by APTrust (see below).
 - **JavaScript** is a small amount of hand-written code, with no frameworks or libraries. Every pathfinder result is also a static page at `/start/<situation>/<level>/`, so the site works without JavaScript.
 - **Accessibility** target: WCAG 2.2 AA.
-- **Analytics:** Matomo, without cookies and with IP addresses anonymized.
+- **Analytics:** Matomo (`assets/js/analytics.js`), without cookies, honoring Do Not Track, and never recording query strings such as search terms. The other scripts send Matomo events (pathfinder answers, glossary terms opened, checklist ticks, tool filters, searches, feedback sent) with fixed values only; the list is under Analytics in the project plan. Only production builds of the public site load it, not `hugo server` or private previews. IP anonymization and log retention are set in Matomo itself.
 
 ## Updating the pathfinder
 
@@ -95,9 +99,15 @@ hugo build && pagefind --site public
 
 Until launch, `launched = false` in `hugo.toml` puts a preview banner on every page and tells search engines not to index the site. Set it to `true` on launch day.
 
+Other settings in `hugo.toml` `[params]`:
+
+- `clir.pdf` and `clir.doi`: CLIR's PDF and DOI. Empty until CLIR publishes; once set, every page links to them.
+- `matomo.url` and `matomo.siteId`: the Matomo server and site. Empty `url` turns analytics off.
+- `feedback`: the Google Form behind the feedback page. `action` is the form's `formResponse` address, and `page`, `message`, and `email` are its question IDs (`entry.123…`). While `action` is empty, the feedback page says the form isn't open yet.
+
 ## Feedback
 
-Once the site is live, use the feedback form on any page. You don't need a GitHub account. Team members can also open an issue in this repository.
+Once the site is live, use the "Send feedback" link at the bottom of any page. You don't need a GitHub account. Team members can also open an issue in this repository.
 
 ## Credits and license
 

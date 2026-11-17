@@ -1,25 +1,94 @@
 {{ define "main" }}
+{{/*
+  The tools directory, from data/tools.yaml. Filters (added by tools.js) work
+  on two things worked out here:
+  - tasks: the "Used for" list, split at commas, without the parenthetical
+    detail ("Migration (images)" counts as "Migration");
+  - platforms: Windows, Mac, Linux, Web, and Command line, read from the
+    Platform text. "Any" matches every platform.
+  "In the toolkit" lists the sections whose path steps name the tool.
+*/}}
+{{ $tools := sort hugo.Data.tools "name" }}
+{{ $platforms := slice (dict "id" "windows" "label" "Windows" "match" "windows") (dict "id" "mac" "label" "Mac" "match" "mac") (dict "id" "linux" "label" "Linux" "match" "linux") (dict "id" "web" "label" "Web" "match" "web") (dict "id" "command-line" "label" "Command line" "match" "command line") }}
+
+{{/* tool id -> sections that name it in a path step */}}
+{{ $mentions := dict }}
+{{ range hugo.Data.paths.situations }}
+  {{ range .steps }}
+    {{ $sec := .section }}
+    {{ range .tools }}
+      {{ $mentions = merge $mentions (dict . ((index $mentions . | default slice) | append $sec | uniq)) }}
+    {{ end }}
+  {{ end }}
+{{ end }}
+
+{{ $allTasks := slice }}
+{{ range $tools }}
+  {{ range split .used_for "," }}
+    {{ $t := replaceRE `\s*\(.*\)` "" . | strings.TrimSpace }}
+    {{ with $t }}{{ $allTasks = $allTasks | append (printf "%s%s" (upper (substr . 0 1)) (substr . 1)) }}{{ end }}
+  {{ end }}
+{{ end }}
+
 <div class="prose" data-pagefind-body>
   <h1>{{ .Title }}</h1>
   {{ .Content }}
 </div>
-<div class="table-wrap">
+
+<form class="tool-filters" data-tool-filters hidden aria-label="Filter tools" data-pagefind-ignore>
+  <div class="field">
+    <label for="tf-task">Task</label>
+    <select id="tf-task" name="task">
+      <option value="">All tasks</option>
+      {{ range sort (uniq $allTasks) }}<option value="{{ lower . }}">{{ . }}</option>{{ end }}
+    </select>
+  </div>
+  <div class="field">
+    <label for="tf-platform">Platform</label>
+    <select id="tf-platform" name="platform">
+      <option value="">Any platform</option>
+      {{ range $platforms }}<option value="{{ .id }}">{{ .label }}</option>{{ end }}
+    </select>
+  </div>
+  <label class="check"><input type="checkbox" name="free"> Free only</label>
+</form>
+<p class="tool-count" role="status" aria-live="polite" data-tool-count></p>
+
+<div class="table-wrap" data-pagefind-body>
   <table class="tools-table">
     <caption class="visually-hidden">Tools named in the toolkit</caption>
     <thead>
       <tr><th scope="col">Tool</th><th scope="col">Used for</th><th scope="col">Platform</th><th scope="col">Cost</th><th scope="col">Notes</th></tr>
     </thead>
     <tbody>
-      {{ range sort hugo.Data.tools "name" }}
-      <tr id="{{ .id }}">
+      {{ range $tools }}
+      {{ $tool := . }}
+      {{ $tasks := slice }}
+      {{ range split .used_for "," }}{{ with replaceRE `\s*\(.*\)` "" . | strings.TrimSpace }}{{ $tasks = $tasks | append (lower .) }}{{ end }}{{ end }}
+      {{ $plat := slice }}
+      {{ $p := lower .platform }}
+      {{ if eq $p "any" }}{{ range $platforms }}{{ $plat = $plat | append .id }}{{ end }}{{ else }}
+      {{ range $platforms }}{{ if strings.Contains $p .match }}{{ $plat = $plat | append .id }}{{ end }}{{ end }}{{ end }}
+      <tr id="{{ .id }}" data-tasks="{{ delimit $tasks "|" }}" data-platforms="{{ delimit $plat " " }}" data-free="{{ hasPrefix (lower .cost) "free" }}">
         <th scope="row">{{ with .url }}<a href="{{ . }}">{{ end }}{{ .name }}{{ with .url }}</a>{{ end }}</th>
         <td data-label="Used for">{{ .used_for }}</td>
         <td data-label="Platform">{{ .platform }}</td>
         <td data-label="Cost">{{ .cost }}</td>
-        <td data-label="Notes">{{ .note }}</td>
+        <td data-label="Notes">{{ .note }}
+          {{ with index $mentions .id }}
+          {{ $in := . }}
+          <span class="tool-mentions">In the toolkit:
+            {{ $n := 0 }}
+            {{ range hugo.Data.sections }}{{ if in $in .id }}{{ with site.GetPage (printf "/%s" .id) }}{{ if $n }}, {{ end }}<a href="{{ partial "section-url.html" . }}">{{ .Title }}</a>{{ $n = add $n 1 }}{{ end }}{{ end }}{{ end }}
+          </span>
+          {{ end }}
+        </td>
       </tr>
       {{ end }}
     </tbody>
   </table>
 </div>
+{{ with resources.Get "js/tools.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
 {{ end }}

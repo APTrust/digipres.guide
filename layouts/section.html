@@ -9,6 +9,7 @@
     <h1>{{ .Title }}</h1>
     {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
     {{ .Content }}
+    {{ with site.Params.clir.pdf }}<p class="pdf-link"><a href="{{ . }}">Read this phase in CLIR's PDF</a></p>{{ end }}
   </header>
 
   <nav class="toc" aria-labelledby="toc-heading">
@@ -22,13 +23,17 @@
       </li>
       {{ end }}
     </ol>
+    <p class="toc-tools">
+      <button type="button" class="button-quiet" data-glossary-open hidden>Glossary</button>
+      {{ with site.GetPage "/checklists" }}<a class="button-quiet" href="{{ .RelPermalink }}">Checklists</a>{{ end }}
+    </p>
   </nav>
 
   <div class="phase-body" data-pagefind-body>
 
     {{ range $i, $s := $sections }}
     {{ $sid := .File.ContentBaseName }}
-    <section class="toolkit-section" id="{{ $sid }}" aria-labelledby="{{ $sid }}-title">
+    <section class="toolkit-section" id="{{ $sid }}" aria-labelledby="{{ $sid }}-title" data-glossary-scope data-checklist="{{ $.Section }}/{{ $sid }}">
       <h2 id="{{ $sid }}-title" class="has-anchor"><span class="sec-num">{{ $n }}.{{ add $i 1 }}</span> {{ .Title }}<a class="anchor" href="#{{ $sid }}" aria-label="Link to “{{ .Title }}”">#</a></h2>
       {{ .Content }}
       <p class="section-end">
@@ -43,4 +48,5 @@
     {{ partial "reading-pager.html" . }}
   </div>
 </div>
+{{ partial "reading-tools.html" . }}
 {{ end }}

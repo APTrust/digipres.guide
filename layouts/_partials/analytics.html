@@ -1,0 +1,13 @@
+{{/*
+  Matomo, only in production builds of the public site: never under
+  `hugo server`, and never in a private preview build. Section addresses
+  that forward to their phase page aren't counted, so a visit counts once.
+*/}}
+{{ $forwards := partial "phase-member.html" . }}
+{{ with site.Params.matomo }}
+{{ if and .url .siteId hugo.IsProduction (not site.Params.privatePreview) (not $forwards) }}
+{{ with resources.Get "js/analytics.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" data-url="{{ site.Params.matomo.url }}" data-site="{{ site.Params.matomo.siteId }}" defer></script>
+{{ end }}
+{{ end }}
+{{ end }}

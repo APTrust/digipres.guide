@@ -1,0 +1,39 @@
+{{ define "main" }}
+{{/*
+  The worksheet: every checklist from the toolkit text, in reading order,
+  pulled from each section's rendered content. Each one keeps its section's
+  data-checklist name, so ticks are shared with the phase pages.
+*/}}
+<div class="prose" data-worksheet-page>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+  <p class="no-print"><button type="button" class="button-quiet" data-print hidden>Print the worksheet</button></p>
+
+  {{ $found := 0 }}
+  {{ range $i, $id := site.Params.phases }}
+  {{ with site.GetPage (printf "/%s" $id) }}
+  {{ $phase := . }}
+  {{ range $j, $sec := partial "phase-sections.html" . }}
+  {{ $lists := findRE `(?s)<ul class="checklist">.*?</ul>` .Content }}
+  {{ with $lists }}
+  {{ $found = add $found 1 }}
+  {{ $sid := $sec.File.ContentBaseName }}
+  <section class="worksheet phase-{{ $id }}" id="{{ $id }}-{{ $sid }}" data-checklist="{{ $id }}/{{ $sid }}">
+    <p class="eyebrow">{{ $phase.Title }} {{ add $i 1 }}.{{ add $j 1 }}</p>
+    <h2>{{ $sec.Title }}</h2>
+    {{ range . }}{{ . | safeHTML }}{{ end }}
+    <p class="no-print"><a href="{{ partial "section-url.html" $sec }}">Read “{{ $sec.Title }}”</a></p>
+  </section>
+  {{ end }}
+  {{ end }}
+  {{ end }}
+  {{ end }}
+
+  {{ if not $found }}
+  <p class="note">The checklists will appear here when the toolkit text is published.</p>
+  {{ end }}
+</div>
+{{ with resources.Get "js/checklists.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
+{{ end }}

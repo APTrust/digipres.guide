@@ -1,23 +1,36 @@
 {{ define "main" }}
 {{ $p := hugo.Data.paths }}
-<div class="prose">
+<div class="home-hero prose">
   <h1>{{ .Title }}</h1>
   {{ with index $p.framing "home-intro" }}<p class="lede">{{ . }}</p>{{ end }}
 </div>
-{{ partial "pathfinder.html" (dict) }}
-<p><a href="{{ "start/" | relURL }}">Browse all paths</a></p>
 
+<section class="home-panel" aria-label="Find your path">
+  {{ partial "pathfinder.html" (dict) }}
+  <noscript><p>Choose your situation and resources from the list of <a href="{{ "start/" | relURL }}">all paths</a>.</p></noscript>
+  <p class="browse"><a href="{{ "start/" | relURL }}">Browse all paths</a></p>
+</section>
+
+<h2 class="home-section-title">Read the full toolkit</h2>
 <div class="prose">
   {{ .Content }}
 </div>
 <ul class="phase-list">
-  {{ range site.Params.phases }}
-  {{ with site.GetPage (printf "/%s" .) }}
-  <li>
-    <a href="{{ .RelPermalink }}"><strong>{{ .LinkTitle }}</strong></a>
+  {{ range $i, $id := site.Params.phases }}
+  {{ with site.GetPage (printf "/%s" $id) }}
+  <li class="phase-{{ $id }}">
+    <p class="eyebrow">Phase {{ add $i 1 }}</p>
+    <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>
     <span>{{ .Description }}</span>
   </li>
   {{ end }}
+  {{ end }}
+</ul>
+
+<h2 class="home-section-title">Also in the toolkit</h2>
+<ul class="also-list">
+  {{ range slice "/introduction" "/tools" "/checklists" "/glossary" "/conclusion" "/works-cited" "/about" }}
+  {{ with site.GetPage . }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}
   {{ end }}
 </ul>
 {{ end }}

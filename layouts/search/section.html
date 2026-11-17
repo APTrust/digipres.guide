@@ -1,0 +1,21 @@
+{{ define "main" }}
+{{/* Search results come from the Pagefind index, built after Hugo (pagefind --site public). */}}
+<div class="prose">
+  <h1>{{ .Title }}</h1>
+  <form class="search-form" role="search" method="get" action="{{ .RelPermalink }}" data-search data-bundle="{{ "pagefind/" | relURL }}">
+    <div class="field">
+      <label for="search-q">Search the toolkit</label>
+      <div class="search-row">
+        <input id="search-q" name="q" type="search" autocomplete="off" spellcheck="false">
+        <button type="submit">Search</button>
+      </div>
+    </div>
+  </form>
+  <p class="search-status" role="status" aria-live="polite" data-search-status></p>
+  <noscript><p class="note">Search needs JavaScript. You can still find everything from the menu, the <a href="{{ "start/" | relURL }}">list of paths</a>, and the <a href="{{ "glossary/" | relURL }}">glossary</a>.</p></noscript>
+</div>
+<ol class="search-results" data-search-results></ol>
+{{ with resources.Get "js/search.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
+{{ end }}

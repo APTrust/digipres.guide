@@ -11,6 +11,14 @@
     <ul>{{ range uniq $letters }}<li><a href="#letter-{{ lower . }}">{{ . }}</a></li>{{ end }}</ul>
   </nav>
 
+  <form class="glossary-filter" role="search" data-glossary-filter hidden data-pagefind-ignore>
+    <div class="field">
+      <label for="glossary-q">Find a term</label>
+      <input id="glossary-q" type="search" autocomplete="off" spellcheck="false">
+    </div>
+    <p class="hint" role="status" aria-live="polite"></p>
+  </form>
+
   {{ $current := "" }}
   {{ range $g.terms }}
   {{ $letter := upper (substr .term 0 1) }}
@@ -37,4 +45,7 @@
     {{ end }}
   </ul>
 </div>
+{{ with resources.Get "js/glossary.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
 {{ end }}

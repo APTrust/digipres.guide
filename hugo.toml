@@ -37,6 +37,30 @@ refLinksErrorLevel = "ERROR"
 [markup.goldmark.extensions.footnote]
   enableAutoIDPrefix = true
 
+[params.clir]
+  # CLIR's PDF of the toolkit and its DOI, once published. While empty, nothing
+  # is shown. When set, every page links to them.
+  pdf = ""
+  doi = ""
+
+[params.feedback]
+  # The Google Form behind the feedback page. "action" is the form's
+  # formResponse address (https://docs.google.com/forms/d/e/<id>/formResponse),
+  # and the others are its question IDs ("entry.123456789"). While "action" is
+  # empty, the feedback page says the form isn't open yet.
+  action = ""
+  page = ""
+  message = ""
+  email = ""
+
+[params.matomo]
+  # Page-view counting (assets/js/analytics.js): cookieless, honors Do Not
+  # Track, and never records query strings. Only production builds of the
+  # public site load it; `hugo server` and private previews never do.
+  # Leave url empty to turn analytics off.
+  url = "https://analytics.blacktallman.com/"
+  siteId = "7"
+
 [params.pathfinder]
   # Which situation statuses (from the sheet) get pages on the site.
   # Before launch, show everything the team has drafted. At launch, change

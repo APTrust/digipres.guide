@@ -1,7 +1,14 @@
 <footer class="site-footer">
-  <p>
-    {{ with .File }}<a href="{{ site.Params.repo }}/edit/{{ site.Params.branch }}/content/{{ .Path }}">Edit this page on GitHub</a> · {{ end }}
-    {{ if not .Lastmod.IsZero }}Last updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "January 2, 2006" }}</time> · {{ end }}
-    Built with <a href="https://gohugo.io/">Hugo</a>
-  </p>
+  <div class="site-footer-inner">
+    <div class="footer-credit">
+      <p>A companion to <cite>Digital Preservation Toolkit for Organizations with Limited Resources</cite>, published by <a href="https://www.clir.org/">CLIR</a>.{{ with site.Params.clir.pdf }} <a href="{{ . }}">Read the PDF from CLIR</a>.{{ end }}{{ with site.Params.clir.doi }} DOI: <a href="https://doi.org/{{ . }}">{{ . }}</a>{{ end }}</p>
+    </div>
+    <ul class="footer-links">
+      {{ with site.GetPage "/about" }}<li><a href="{{ .RelPermalink }}">About and credits</a></li>
+      <li><a href="{{ .RelPermalink }}#privacy">Privacy</a></li>{{ end }}
+      {{ with site.GetPage "/feedback" }}<li><a href="{{ .RelPermalink }}{{ if ne $.RelPermalink .RelPermalink }}?page={{ $.RelPermalink | urlquery }}{{ end }}">Send feedback{{ if and (ne $.RelPermalink .RelPermalink) (not $.IsHome) }} about this page{{ end }}</a></li>{{ end }}
+      {{ with .File }}<li><a href="{{ site.Params.repo }}/edit/{{ site.Params.branch }}/content/{{ .Path }}">Edit this page on GitHub</a></li>{{ end }}
+    </ul>
+    {{ if not .Lastmod.IsZero }}<p class="footer-meta">Last updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "January 2, 2006" }}</time></p>{{ end }}
+  </div>
 </footer>

@@ -1,0 +1,47 @@
+{{ define "main" }}
+{{/*
+  Feedback goes straight to a Google Form held by APTrust (params.feedback in
+  hugo.toml). Each field's name is the Google Form question's entry ID. With
+  JavaScript, feedback.js sends it in the background and shows a thank-you
+  message; without it, the browser posts the form and Google shows its own
+  confirmation page.
+*/}}
+{{ $f := site.Params.feedback }}
+<div class="prose">
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+
+  {{ if $f.action }}
+  {{ if not (and $f.page $f.message $f.email) }}{{ errorf "params.feedback in hugo.toml has an action but is missing a question ID (page, message, or email)" }}{{ end }}
+  <form class="feedback-form" method="post" action="{{ $f.action }}" data-feedback>
+    <div class="field">
+      <label for="fb-page">Which page is this about? <span>(optional)</span></label>
+      <input id="fb-page" name="{{ $f.page }}" type="text" data-feedback-page data-site="{{ site.BaseURL }}">
+      <p class="hint" id="fb-page-hint">Leave this blank if it's about the whole site.</p>
+    </div>
+    <div class="field">
+      <label for="fb-message">What's wrong, or what would you suggest?</label>
+      <textarea id="fb-message" name="{{ $f.message }}" rows="7" required></textarea>
+    </div>
+    <div class="field">
+      <label for="fb-email">Your email <span>(optional)</span></label>
+      <input id="fb-email" name="{{ $f.email }}" type="email" autocomplete="email" aria-describedby="fb-email-hint">
+      <p class="hint" id="fb-email-hint">Only if you'd like a reply. We won't use it for anything else.</p>
+    </div>
+    <div class="hp" aria-hidden="true">
+      <label for="fb-website">Leave this empty</label>
+      <input id="fb-website" name="website" type="text" tabindex="-1" autocomplete="off" data-honeypot>
+    </div>
+    <button type="submit">Send feedback</button>
+    <p class="form-status" role="status" tabindex="-1" data-feedback-status></p>
+  </form>
+  {{ else }}
+  <p class="note">The feedback form isn't open yet. Until it is, team members can <a href="{{ site.Params.repo }}/issues">open an issue on GitHub</a>.</p>
+  {{ end }}
+
+  <p>Your feedback goes to a Google Form held by APTrust for the toolkit team, and only the team can read it. See <a href="{{ "about/#privacy" | relURL }}">Privacy</a>.</p>
+</div>
+{{ with resources.Get "js/feedback.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}
+{{ end }}
