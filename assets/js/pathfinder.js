@@ -1,3 +1,4 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
 // Pathfinder: shows the two-question form and sends the reader to the
 // static page for their answers, /start/<situation>/<level>/.
 // Every path is a real page, so nothing breaks if this script doesn't run.

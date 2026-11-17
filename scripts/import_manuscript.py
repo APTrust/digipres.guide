@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+# SPDX-License-Identifier: GPL-3.0-or-later
 """Import the toolkit manuscript (.docx) into one Markdown page per section.
 
 Usage:

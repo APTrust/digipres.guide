@@ -103,4 +103,6 @@ Once the site is live, use the feedback form on any page. You don't need a GitHu
 
 The toolkit is written by a team of digital preservation practitioners. The site is built and maintained by APTrust.
 
-License: to be decided. See the open questions in the [project plan](planning/project-plan.md#open-questions).
+**Code:** the site's templates, styles, scripts, and build workflow (`layouts/`, `assets/`, `scripts/`, `.github/`, and the Hugo configuration) are licensed under the [GNU General Public License v3.0 or later](LICENSE).
+
+**Content:** the toolkit text, glossary, and pathfinder data (`content/`, `data/`, `planning/`, and `concepts/`) are not covered by the GPL. Their license is still to be decided; see the open questions in the [project plan](planning/project-plan.md#open-questions). Glossary definitions are quoted from the DPC, SAA, and FADGI, which keep their own terms.

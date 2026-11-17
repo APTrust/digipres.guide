@@ -65,7 +65,7 @@ gantt
 
 | Status | Phase | Dates | What happens | Gate |
 | --- | --- | --- | --- | --- |
-| ✅ Done (Nov 17) | 0. Setup | Nov 23 to 25 | Repo in the APTrust org, pinned Hugo, Actions deploy to Pages, `digipres.guide` DNS and HTTPS. The content license is still an open question. | |
+| ✅ Done (Nov 17) | 0. Setup | Nov 23 to 25 | Repo in the APTrust org, pinned Hugo, Actions deploy to Pages, `digipres.guide` DNS and HTTPS. Code licensed GPL-3.0-or-later; the content license is still an open question. | |
 | ✅ Done (Nov 17) | 1. Draft import and data files | Nov 30 to Dec 11 | ✅ Converter from the path data sheet to `paths.yaml`, `tools.yaml`, `storage.yaml`, and `sections.yaml`, plus placeholder pages for every section. ✅ `glossary.yaml` from the Nov 10 draft. ✅ Import script (pandoc) turns the Nov 10 draft into 36 pages, kept private until launch (see [Keeping the toolkit text private](#keeping-the-toolkit-text-private)). | Path data template goes to the team in Phase 0 |
 | ⬜ Not started | 2. Design and templates | Dec 7 to 18 | Theme, section pages, glossary, tools directory, checklists, search, feedback form | Decisions and CLIR branding answer by **Dec 4** |
 | | Winter break | Dec 21 to Jan 1 | | Path data due **Dec 18** · Final manuscript due **Dec 15** |
@@ -224,6 +224,6 @@ Project meetings and scheduling stay with the team's existing coordinator.
 
 - Is Pocket Burgundy branding required? (CLIR, by Dec 4)
 - When does CLIR plan to publish, and when do they lock the PDF?
-- Which content license? CC-BY-SA 4.0? Do we want CC-BY-NC-SA 4.0?
+- Which content license? CC-BY-SA 4.0? Do we want CC-BY-NC-SA 4.0? (The code is GPL-3.0-or-later; this covers the text, glossary, and path data.)
 - Confirm the winter break dates for each team member.
 - How will section authors review their pages (Jan 11 to 22) while the text is private? Options: a screen-share walkthrough, a zipped private build sent to each author, or a password-protected preview host.
