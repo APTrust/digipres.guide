@@ -1,0 +1,32 @@
+baseURL = "https://digipres.guide/"
+locale = "en-us"
+title = "Digital Preservation Toolkit"
+
+# Last-updated dates come from git history (CI checks out the full history).
+enableGitInfo = true
+enableRobotsTXT = true
+disableKinds = ["taxonomy", "term", "rss"]
+
+# A broken {{< ref >}} to another section fails the build instead of making a dead link.
+refLinksErrorLevel = "ERROR"
+
+[module.hugoVersion]
+  # Keep in step with HUGO_VERSION in .github/workflows/deploy.yml.
+  min = "0.169.0"
+
+[frontmatter]
+  lastmod = [":git", "lastmod", ":fileModTime"]
+
+[params]
+  description = "A guide to digital preservation for organizations with limited resources."
+  repo = "https://github.com/APTrust/digipres.guide"
+  branch = "main"
+  # While false, every page says "noindex" and robots.txt asks search engines to stay away.
+  # Set to true on launch day.
+  launched = false
+
+[markup.goldmark.renderer]
+  unsafe = false
+
+[markup.goldmark.parser.attribute]
+  block = true

@@ -9,7 +9,7 @@ The website presents the same content in a form people can use while they work. 
 - **CURATE:** first preservation actions
 - **PRESERVE:** long-term preservation practices
 
-> **Status:** planning. The site is not built yet. We expect to launch the week of February 15, 2027.
+> **Status:** in development. A placeholder site is in place; content arrives in January 2027. We expect to launch the week of February 15, 2027.
 
 ## What's here
 
@@ -19,6 +19,9 @@ The website presents the same content in a form people can use while they work. 
 | [`planning/path-data-template.xlsx`](planning/path-data-template.xlsx) | A blank template for the pathfinder's data: situations, levels, steps, tools, and storage options |
 | [`planning/path-data-draft.xlsx`](planning/path-data-draft.xlsx) | The same template, pre-filled from the November 10 draft so the team can review it |
 | [`concepts/site-concepts.html`](concepts/site-concepts.html) | The three design concepts the team chose between. We chose Concept C, "Start Where You Are." |
+| `content/` | The site's pages, in Markdown. For now, one placeholder page per phase. |
+| `layouts/`, `assets/` | Hugo templates and CSS. The CSS is a placeholder until the design phase. |
+| `hugo.toml` | Site settings, including the `launched` switch |
 
 Manuscript drafts are kept in `content-drafts/`, which git ignores. They are not published in this repository.
 
@@ -32,7 +35,23 @@ Manuscript drafts are kept in `content-drafts/`, which git ignores. They are not
 - **Accessibility** target: WCAG 2.2 AA.
 - **Analytics:** Matomo, without cookies and with IP addresses anonymized.
 
-When the site is built, this section will explain how to preview it locally and how deploys work.
+## Building and previewing
+
+Every push to `main` builds the site and deploys it to GitHub Pages ([`.github/workflows/deploy.yml`](.github/workflows/deploy.yml)). Pull requests run the same build without deploying, so mistakes show up before they merge.
+
+The Hugo and Pagefind versions are pinned in the workflow. To preview locally, install the same Hugo version (see `HUGO_VERSION` in the workflow; `hugo.toml` refuses anything older), then run this from the repository root:
+
+```bash
+hugo server
+```
+
+Then open <http://localhost:1313/>. Search only works in a full build:
+
+```bash
+hugo build && pagefind --site public
+```
+
+Until launch, `launched = false` in `hugo.toml` puts a preview banner on every page and tells search engines not to index the site. Set it to `true` on launch day.
 
 ## Feedback
 

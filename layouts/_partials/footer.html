@@ -1,0 +1,7 @@
+<footer class="site-footer">
+  <p>
+    {{ with .File }}<a href="{{ site.Params.repo }}/edit/{{ site.Params.branch }}/content/{{ .Path }}">Edit this page on GitHub</a> · {{ end }}
+    {{ if not .Lastmod.IsZero }}Last updated <time datetime="{{ .Lastmod.Format "2006-01-02" }}">{{ .Lastmod.Format "January 2, 2006" }}</time> · {{ end }}
+    Built with <a href="https://gohugo.io/">Hugo</a>
+  </p>
+</footer>

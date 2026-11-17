@@ -1,0 +1,6 @@
+User-agent: *
+{{ if site.Params.launched -}}
+Disallow:
+{{- else -}}
+Disallow: /
+{{- end }}

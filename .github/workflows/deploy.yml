@@ -1,0 +1,90 @@
+# Builds the site with pinned Hugo and Pagefind and deploys it to GitHub Pages.
+# Pull requests build only, so a broken build shows up before it merges.
+# Both binaries are downloaded from their official GitHub releases and checked
+# against the published SHA-256 checksums. No third-party actions are used.
+name: Build and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  # Upgrade on purpose: change the version, open a pull request, check the build.
+  # Keep HUGO_VERSION in step with module.hugoVersion.min in hugo.toml.
+  HUGO_VERSION: 0.169.0
+  PAGEFIND_VERSION: 1.5.2
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0 # full history, for "Last updated" dates
+
+      - name: Install Hugo
+        working-directory: ${{ runner.temp }}
+        run: |
+          base="https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}"
+          tarball="hugo_${HUGO_VERSION}_linux-amd64.tar.gz"
+          curl -fsSLO "${base}/${tarball}"
+          curl -fsSLO "${base}/hugo_${HUGO_VERSION}_checksums.txt"
+          grep " ${tarball}\$" "hugo_${HUGO_VERSION}_checksums.txt" | sha256sum -c -
+          tar -xzf "${tarball}" hugo
+          echo "${RUNNER_TEMP}" >> "${GITHUB_PATH}"
+
+      - name: Install Pagefind
+        working-directory: ${{ runner.temp }}
+        run: |
+          base="https://github.com/pagefind/pagefind/releases/download/v${PAGEFIND_VERSION}"
+          tarball="pagefind-v${PAGEFIND_VERSION}-x86_64-unknown-linux-musl.tar.gz"
+          curl -fsSLO "${base}/${tarball}"
+          curl -fsSLO "${base}/${tarball}.sha256"
+          sha256sum -c "${tarball}.sha256"
+          tar -xzf "${tarball}" pagefind
+
+      - name: Configure Pages
+        id: pages
+        if: github.event_name != 'pull_request'
+        uses: actions/configure-pages@v6
+
+      - name: Build site
+        env:
+          # The Pages URL once Pages is set up; the real domain for pull request builds.
+          BASE_URL: ${{ steps.pages.outputs.base_url || 'https://digipres.guide' }}
+        run: |
+          hugo version
+          hugo build --gc --minify --panicOnWarning --baseURL "${BASE_URL}/"
+
+      - name: Build search index
+        run: pagefind --site public
+
+      - name: Upload site
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+  deploy:
+    if: github.event_name != 'pull_request'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

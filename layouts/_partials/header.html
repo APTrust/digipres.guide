@@ -1,0 +1,13 @@
+{{ if not site.Params.launched }}
+<p class="preview-banner">Preview: this site is under construction and not yet published.</p>
+{{ end }}
+<header class="site-header">
+  <a class="site-title" href="{{ "/" | relURL }}">{{ site.Title }}</a>
+  <nav aria-label="Toolkit phases">
+    <ul>
+      {{ range site.Sections.ByWeight }}
+      <li><a href="{{ .RelPermalink }}"{{ if or (eq $.Section .Section) (eq $ .) }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>
+      {{ end }}
+    </ul>
+  </nav>
+</header>

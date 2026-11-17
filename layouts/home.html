@@ -1,0 +1,14 @@
+{{ define "main" }}
+<div class="prose">
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+</div>
+<ul class="phase-list">
+  {{ range site.Sections.ByWeight }}
+  <li>
+    <a href="{{ .RelPermalink }}"><strong>{{ .LinkTitle }}</strong></a>
+    <span>{{ .Description }}</span>
+  </li>
+  {{ end }}
+</ul>
+{{ end }}

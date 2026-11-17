@@ -1,0 +1,12 @@
+{{ define "main" }}
+<div class="prose" data-pagefind-body>
+  <h1>{{ .Title }}</h1>
+  {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+  {{ .Content }}
+  {{ with .Pages }}
+  <ul>
+    {{ range . }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}
+  </ul>
+  {{ end }}
+</div>
+{{ end }}
