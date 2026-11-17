@@ -1,0 +1,7 @@
+content-drafts
+.DS_Store
+~*
+public/
+resources/_gen/
+.hugo_build.lock
+.claude
