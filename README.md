@@ -19,11 +19,16 @@ The website presents the same content in a form people can use while they work. 
 | [`planning/path-data-template.xlsx`](planning/path-data-template.xlsx) | A blank template for the pathfinder's data: situations, levels, steps, tools, and storage options |
 | [`planning/path-data-draft.xlsx`](planning/path-data-draft.xlsx) | The same template, pre-filled from the November 10 draft so the team can review it |
 | [`concepts/site-concepts.html`](concepts/site-concepts.html) | The three design concepts the team chose between. We chose Concept C, "Start Where You Are." |
-| `content/` | The site's pages, in Markdown. For now, one placeholder page per phase. |
-| `layouts/`, `assets/` | Hugo templates and CSS. The CSS is a placeholder until the design phase. |
+| `content/` | The site's pages, in Markdown. Section pages are placeholders until the manuscript is imported. |
+| `content/start/` | The pathfinder. Its pages are generated from `data/paths.yaml`, one per situation and resource level. |
+| `data/` | Generated from the path data sheet and the manuscript's glossary. Don't edit by hand. |
+| [`scripts/convert_path_data.py`](scripts/convert_path_data.py) | Converts the path data sheet (.xlsx) into the files in `data/` and checks every reference |
+| [`scripts/import_manuscript.py`](scripts/import_manuscript.py) | Imports the manuscript (.docx) into one page per section, in `private/` until launch. Needs pandoc. |
+| [`scripts/import_glossary.py`](scripts/import_glossary.py) | Imports the glossary appendix from a manuscript draft (.docx) into `data/glossary.yaml`. Needs pandoc. |
+| `layouts/`, `assets/` | Hugo templates, CSS, and the pathfinder's small script. The CSS is a placeholder until the design phase. |
 | `hugo.toml` | Site settings, including the `launched` switch |
 
-Manuscript drafts are kept in `content-drafts/`, which git ignores. They are not published in this repository.
+Manuscript drafts are kept in `content-drafts/`, and their imported text in `private/`. Git ignores both folders, so the toolkit text isn't published in this repository until launch.
 
 ## How the site will work
 
@@ -34,6 +39,43 @@ Manuscript drafts are kept in `content-drafts/`, which git ignores. They are not
 - **JavaScript** is a small amount of hand-written code, with no frameworks or libraries. Every pathfinder result is also a static page at `/start/<situation>/<level>/`, so the site works without JavaScript.
 - **Accessibility** target: WCAG 2.2 AA.
 - **Analytics:** Matomo, without cookies and with IP addresses anonymized.
+
+## Updating the pathfinder
+
+The team edits the path data in a Google Sheet. To publish changes:
+
+1. In Google Sheets, choose **File → Download → Microsoft Excel (.xlsx)**.
+2. From the repository root, run:
+
+   ```bash
+   python3 scripts/convert_path_data.py ~/Downloads/path-data.xlsx --stubs
+   ```
+
+   If anything in the sheet doesn't match (for example, a step names a tool that isn't on the Tools tab), it lists each problem by tab and row and changes nothing. Fix those in the sheet and download again.
+3. Commit the changed files in `data/` and push.
+
+`--stubs` adds a placeholder page for any new section on the Sections tab. It never changes existing pages.
+
+## Importing the manuscript
+
+The toolkit text is imported from the manuscript, but it stays private until launch:
+
+```bash
+python3 scripts/import_manuscript.py content-drafts/<draft>.docx
+hugo server --config hugo.toml,hugo.private.toml
+```
+
+The first command writes one page per section to `private/`, which git ignores. The second previews the full site locally, with a red "Private preview" banner. The public build never includes `private/`. At launch, run the import with `--out content` to write the pages into the site itself.
+
+## Updating the glossary
+
+The glossary comes from the manuscript's glossary appendix. When a new draft arrives, run:
+
+```bash
+python3 scripts/import_glossary.py content-drafts/<new-draft>.docx
+```
+
+Then commit `data/glossary.yaml`. Each term is a Heading 1 in the manuscript, with one Heading 2 per source ("DPC Glossary", "SAA Dictionary", or "FADGI Glossary").
 
 ## Building and previewing
 

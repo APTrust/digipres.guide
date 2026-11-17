@@ -1,0 +1,25 @@
+{{ define "main" }}
+<div class="prose" data-pagefind-body>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+</div>
+<div class="table-wrap">
+  <table class="tools-table">
+    <caption class="visually-hidden">Tools named in the toolkit</caption>
+    <thead>
+      <tr><th scope="col">Tool</th><th scope="col">Used for</th><th scope="col">Platform</th><th scope="col">Cost</th><th scope="col">Notes</th></tr>
+    </thead>
+    <tbody>
+      {{ range sort hugo.Data.tools "name" }}
+      <tr id="{{ .id }}">
+        <th scope="row">{{ with .url }}<a href="{{ . }}">{{ end }}{{ .name }}{{ with .url }}</a>{{ end }}</th>
+        <td data-label="Used for">{{ .used_for }}</td>
+        <td data-label="Platform">{{ .platform }}</td>
+        <td data-label="Cost">{{ .cost }}</td>
+        <td data-label="Notes">{{ .note }}</td>
+      </tr>
+      {{ end }}
+    </tbody>
+  </table>
+</div>
+{{ end }}

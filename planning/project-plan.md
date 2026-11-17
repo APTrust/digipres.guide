@@ -63,16 +63,16 @@ gantt
     URL list to CLIR                       :milestone, 2027-01-15, 0d
 ```
 
-| Phase | Dates | What happens | Gate |
-| --- | --- | --- | --- |
-| 0. Setup | Nov 23 to 25 | Repo in the APTrust org, pinned Hugo, Actions deploy to Pages, `digipres.guide` DNS and HTTPS, content license | |
-| 1. Draft import and data files | Nov 30 to Dec 11 | Import script (pandoc) turns the Nov 10 draft into pages. First drafts of `tools.yaml` and `glossary.yaml`. Converter from the path data sheet to `paths.yaml`. | Path data template goes to the team in Phase 0 |
-| 2. Design and templates | Dec 7 to 18 | Theme, section pages, glossary, tools directory, checklists, search, feedback form | Decisions and CLIR branding answer by **Dec 4** |
-| Winter break | Dec 21 to Jan 1 | | Path data due **Dec 18** · Final manuscript due **Dec 15** |
-| 3a. Final manuscript import | Jan 4 to 8 | Re-run the import on the final .docx and open one pull request with the full diff | |
-| 3b. Pathfinder | Jan 11 to 29 | Path pages generated from `paths.yaml`, in-place switching, framing copy, Matomo events | URL list to CLIR by **Jan 15** |
-| 4. Accessibility and testing | Feb 1 to 12 | WCAG 2.2 AA audit, keyboard and screen reader passes, a few practitioner walkthroughs | Section authors' review done by **Jan 22** |
-| Launch | Week of Feb 15 | Tag v1.0, point the domain, announce | |
+| Status | Phase | Dates | What happens | Gate |
+| --- | --- | --- | --- | --- |
+| ✅ Done (Nov 17) | 0. Setup | Nov 23 to 25 | Repo in the APTrust org, pinned Hugo, Actions deploy to Pages, `digipres.guide` DNS and HTTPS. The content license is still an open question. | |
+| ✅ Done (Nov 17) | 1. Draft import and data files | Nov 30 to Dec 11 | ✅ Converter from the path data sheet to `paths.yaml`, `tools.yaml`, `storage.yaml`, and `sections.yaml`, plus placeholder pages for every section. ✅ `glossary.yaml` from the Nov 10 draft. ✅ Import script (pandoc) turns the Nov 10 draft into 36 pages, kept private until launch (see [Keeping the toolkit text private](#keeping-the-toolkit-text-private)). | Path data template goes to the team in Phase 0 |
+| ⬜ Not started | 2. Design and templates | Dec 7 to 18 | Theme, section pages, glossary, tools directory, checklists, search, feedback form | Decisions and CLIR branding answer by **Dec 4** |
+| | Winter break | Dec 21 to Jan 1 | | Path data due **Dec 18** · Final manuscript due **Dec 15** |
+| ⬜ Not started | 3a. Final manuscript import | Jan 4 to 8 | Re-run the import and the glossary import on the final .docx, privately | |
+| 🔄 Started early | 3b. Pathfinder | Jan 11 to 29 | ✅ First version built from the draft path data (see [Path data](#path-data)). ⬜ Re-run with the team's reviewed sheet, refinements, and Matomo events. | URL list to CLIR by **Jan 15** |
+| ⬜ Not started | 4. Accessibility and testing | Feb 1 to 12 | WCAG 2.2 AA audit, keyboard and screen reader passes, a few practitioner walkthroughs | Section authors' review done by **Jan 22** |
+| ⬜ Not started | Launch | Week of Feb 15 | Publish the toolkit text (import with `--out content`), set `launched = true`, show only Approved paths, tag v1.0, announce | |
 
 The break dates are assumptions; the team should confirm them. If path data slips past December 18, the pathfinder launches with the situations that are ready.
 
@@ -103,11 +103,15 @@ The pathfinder can't be built without the path data, and none of it is in the ma
 
 The grey italic rows are examples from the concept mockup. Sections are keyed to the November 10 draft under the four phase names. If the final manuscript renames a section, keep its ID and change only its title.
 
-In Phase 1, Nathan writes a small converter that reads the sheet (downloaded as .xlsx) and writes `data/paths.yaml`, `data/tools.yaml`, and the storage list. It stops with a clear error if a step points to a section, tool, or level that doesn't exist. Re-running it after any sheet edit updates the site.
+The converter is [`scripts/convert_path_data.py`](../scripts/convert_path_data.py) (Python standard library only). It reads the sheet, downloaded as .xlsx, and rewrites `data/paths.yaml`, `data/tools.yaml`, `data/storage.yaml`, and `data/sections.yaml`. It stops with a list of problems, naming the tab and row, if a step points to a section, tool, level, or storage option that doesn't exist. Nothing is written until the whole sheet checks out.
+
+**The pathfinder is already built from the draft data** ([path-data-draft.xlsx](path-data-draft.xlsx)), so the team can review paths on the preview site as well as in the sheet. Every change after review works the same way: download the Sheet, re-run the converter, and push. Rows added, edited, or deleted in the sheet are added, edited, or deleted on the site. Keep IDs stable once they're in use, because they're part of the paths' URLs.
+
+Which situations appear depends on their Status. Before launch, everything except "Not started" is shown, with a "Draft" note on any path that isn't Approved. At launch, `params.pathfinder.statuses` in `hugo.toml` changes to show only Approved paths.
 
 **Also needed from the team before the break**
 
-- [ ] Glossary: the final term list, and which source's definition to show for each term. Also confirm we may quote SAA, DPC, and FADGI definitions on a public site, and what attribution each needs.
+- [ ] Glossary: the final term list, and which source's definition to show for each term. A first version from the Nov 10 draft is on the site at `/glossary/`, showing every source's definition (cleared to be public on Nov 17). Re-run `scripts/import_glossary.py` on each new draft.
 - [ ] Figures: source files (SVG preferred) and alt text for the cycle diagram and the two workflow diagrams. If none exist, we'll redraw them.
 - [ ] Tools tab: check URLs and notes for the tools you know.
 - [ ] CLIR: whether Pocket Burgundy branding is required.
@@ -115,12 +119,12 @@ In Phase 1, Nathan writes a small converter that reads the sheet (downloaded as 
 
 ## Final manuscript import
 
-The import script is written in Phase 1 against the draft, so the final pass (Jan 4 to 8) is mostly a rerun plus review.
+The import script, [`scripts/import_manuscript.py`](../scripts/import_manuscript.py), was written in Phase 1 against the Nov 10 draft, so the final pass (Jan 4 to 8) is mostly a rerun plus review.
 
-1. **Receive the final .docx** (Dec 15). Site text is frozen until the import merges.
-2. **Re-run the import.** pandoc converts the .docx to Markdown, splits it into one page per section, and drops working material (outline, author assignments, timeline).
-3. **Open one pull request.** The diff shows every change from draft to final, section by section.
-4. **Keep URLs stable.** A heading-to-URL map keeps each page's address. Anything that moves gets a redirect (a Hugo alias).
+1. **Receive the final .docx** (Dec 15) and save it in `content-drafts/`.
+2. **Re-run the import.** pandoc converts the .docx to Markdown and splits it into one page per section, following a heading-to-page map in the script. It drops working material (outline, author assignments, timeline), moves each footnote to the page that cites it, and extracts the figures. It warns about any mapped heading it can't find and any path-data section left without a page. Re-run `scripts/import_glossary.py` too.
+3. **Review the changes privately.** Compare the new pages in `private/content/` with the draft import (for example, by copying the old folder aside first and diffing).
+4. **Keep URLs stable.** When a heading is renamed, update its text in the script's map and keep the page ID. Anything that moves gets a redirect (a Hugo alias).
 5. **Reconcile the path data.** The build fails if a path step links to a section that was renamed or removed. We fix those failures in the sheet's Sections tab and re-run the converter.
 6. **Section authors review their own pages** (Jan 11 to 22) on the preview site.
 7. **Freeze URLs and send the list to CLIR** (Jan 15).
@@ -129,6 +133,18 @@ The draft has issues the final manuscript should settle, because the site depend
 
 - The cycle figure describes five stages (Prepare, Curate, Check, Transfer, Save & Maintain), but the CURATE text has four headings, and Check has no heading of its own.
 - The phase names now read LEARN, READY, CURATE, and PRESERVE. The conclusion still says CREATE.
+- The four figures need alt text. The import leaves it empty.
+- CURATE's "Check" and the Conclusion and Works Cited are bold paragraphs rather than headings. The import handles this, but real headings in the final manuscript would be safer.
+- The draft's Further Reading appendix is unfinished, so it isn't imported yet. Each phase's "Further Resources with Annotation" becomes its own page (for example `/learn/further-resources/`).
+
+### Keeping the toolkit text private
+
+The toolkit text stays out of the public repository and off the public site until launch.
+
+- The import writes to `private/`, which git ignores, as are the manuscript drafts in `content-drafts/`. The public site and repository keep the "coming soon" placeholders.
+- To read the full site locally, run `hugo server --config hugo.toml,hugo.private.toml`. This layers `private/` over the placeholders and shows a red "Private preview" banner on every page. GitHub Actions never uses this config, and `private/` doesn't exist there.
+- The path data, tools, and glossary are public now. The glossary was cleared to be public on Nov 17.
+- At launch, run the import with `--out content`, which writes the pages into the site itself, then commit them.
 - Several passages are unfinished, including the political shifts bullet, the ransomware sentence, and the recommended reading under Program Benchmarking.
 
 ## Feedback form
@@ -199,6 +215,7 @@ Project meetings and scheduling stay with the team's existing coordinator.
 | Spam through the feedback form | Honeypot field. If needed, switch to embedding Google's own form page. |
 | The feedback form's owner leaves | The Form and Sheet live in an APTrust shared drive with two Managers (Nathan and Biz), so no one person's account holds them |
 | Google Form field IDs change | Keep the form's questions fixed after launch. If one changes, update the matching field ID in the site's form. |
+| Toolkit text goes public before the team is ready | The import writes only to `private/`, which git ignores. GitHub Actions never uses the private preview config. A red banner marks any private build. |
 | Paths read as the one right answer | Framing copy on every path page, with the full toolkit always one click away |
 | Tool listings go stale | Tools live in one data file. A scheduled link check runs in GitHub Actions. |
 | Hugo removes a feature we use | Pin the exact Hugo version. Upgrade only on purpose, with a test build. |
@@ -209,3 +226,4 @@ Project meetings and scheduling stay with the team's existing coordinator.
 - When does CLIR plan to publish, and when do they lock the PDF?
 - Which content license? CC-BY-SA 4.0? Do we want CC-BY-NC-SA 4.0?
 - Confirm the winter break dates for each team member.
+- How will section authors review their pages (Jan 11 to 22) while the text is private? Options: a screen-share walkthrough, a zipped private build sent to each author, or a password-protected preview host.

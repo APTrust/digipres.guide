@@ -1,0 +1,47 @@
+{{ define "main" }}
+{{ $p := hugo.Data.paths }}
+{{ $show := site.Params.pathfinder.statuses }}
+{{ if .Params.situation }}
+  {{/* /start/<situation>/: pick a level */}}
+  {{ $s := index (where $p.situations "id" .Params.situation) 0 }}
+  <nav class="crumbs" aria-label="Breadcrumb"><a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a> › <span aria-current="page">{{ $s.title }}</span></nav>
+  <div class="prose">
+    <h1>{{ $s.title }}</h1>
+    <p class="lede">{{ $s.description }}</p>
+    <h2>{{ index $p.framing "level-question" | default "What can you put toward it?" }}</h2>
+  </div>
+  <ul class="card-list">
+    {{ range .Pages.ByWeight }}
+    {{ $l := index (where $p.levels "id" .Params.level) 0 }}
+    <li>
+      <a href="{{ .RelPermalink }}"><strong>{{ $l.title }}</strong></a>
+      <span>{{ delimit (slice $l.budget $l.staff_time $l.it_access) " · " }}</span>
+    </li>
+    {{ end }}
+  </ul>
+{{ else }}
+  {{/* /start/: the pathfinder, plus every path as a plain link */}}
+  <div class="prose">
+    <h1>{{ .Title }}</h1>
+    {{ with index $p.framing "home-intro" }}<p class="lede">{{ . }}</p>{{ end }}
+  </div>
+  {{ partial "pathfinder.html" (dict) }}
+  <section class="all-paths" aria-labelledby="all-paths">
+    <h2 id="all-paths">All paths</h2>
+    {{ range $p.situations }}
+    {{ if in $show .status }}
+    {{ $sid := .id }}
+    <div class="path-group">
+      <h3><a href="{{ printf "/start/%s/" .id | relURL }}">{{ .title }}</a></h3>
+      <p>{{ .description }}</p>
+      <ul>
+        {{ range $p.levels }}
+        <li><a href="{{ printf "/start/%s/%s/" $sid .id | relURL }}">{{ .title }}</a></li>
+        {{ end }}
+      </ul>
+    </div>
+    {{ end }}
+    {{ end }}
+  </section>
+{{ end }}
+{{ end }}

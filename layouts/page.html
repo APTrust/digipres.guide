@@ -1,5 +1,6 @@
 {{ define "main" }}
-<article class="prose" data-pagefind-body>
+<article class="prose"{{ if not .Params.stub }} data-pagefind-body{{ end }}>
+  {{ with .Parent }}{{ if not .IsHome }}<p class="eyebrow"><a href="{{ .RelPermalink }}">{{ .Title }}</a></p>{{ end }}{{ end }}
   <h1>{{ .Title }}</h1>
   {{ .Content }}
 </article>

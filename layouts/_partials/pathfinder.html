@@ -1,0 +1,39 @@
+{{/*
+  The two-question pathfinder form. Pass a dict with optional "situation" and
+  "level" IDs to preselect answers, and "heading" ("h2" by default).
+  The form is hidden until pathfinder.js runs; without JavaScript, readers
+  use the plain list of links to every path on /start/ instead.
+*/}}
+{{ $p := hugo.Data.paths }}
+{{ $show := site.Params.pathfinder.statuses }}
+{{ $start := site.GetPage "/start" }}
+<form class="pathfinder" data-pathfinder data-base="{{ $start.RelPermalink }}" action="{{ $start.RelPermalink }}" hidden>
+  <fieldset>
+    <legend>1. {{ index $p.framing "situation-question" | default "What are you working with?" }}</legend>
+    <div class="choices">
+      {{ range $p.situations }}
+      {{ if in $show .status }}
+      <label class="choice">
+        <input type="radio" name="situation" value="{{ .id }}" required{{ if eq .id $.situation }} checked{{ end }}>
+        <span><strong>{{ .title }}</strong> <small>{{ .description }}</small></span>
+      </label>
+      {{ end }}
+      {{ end }}
+    </div>
+  </fieldset>
+  <fieldset>
+    <legend>2. {{ index $p.framing "level-question" | default "What can you put toward it?" }}</legend>
+    <div class="choices">
+      {{ range $p.levels }}
+      <label class="choice">
+        <input type="radio" name="level" value="{{ .id }}" required{{ if eq .id $.level }} checked{{ end }}>
+        <span><strong>{{ .title }}</strong> <small>{{ delimit (slice .budget .staff_time .it_access) " · " }}</small></span>
+      </label>
+      {{ end }}
+    </div>
+  </fieldset>
+  <button type="submit">Show my path</button>
+</form>
+{{ with resources.Get "js/pathfinder.js" | minify | fingerprint }}
+<script src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}" defer></script>
+{{ end }}

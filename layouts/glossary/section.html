@@ -1,0 +1,40 @@
+{{ define "main" }}
+{{ $g := hugo.Data.glossary }}
+<div class="prose" data-pagefind-body>
+  <h1>{{ .Title }}</h1>
+  {{ .Content }}
+
+  {{/* A–Z jump links, for letters that have terms */}}
+  {{ $letters := slice }}
+  {{ range $g.terms }}{{ $letters = $letters | append (upper (substr .term 0 1)) }}{{ end }}
+  <nav class="az" aria-label="Glossary letters">
+    <ul>{{ range uniq $letters }}<li><a href="#letter-{{ lower . }}">{{ . }}</a></li>{{ end }}</ul>
+  </nav>
+
+  {{ $current := "" }}
+  {{ range $g.terms }}
+  {{ $letter := upper (substr .term 0 1) }}
+  {{ if ne $letter $current }}
+  <h2 class="az-letter" id="letter-{{ lower $letter }}">{{ $letter }}</h2>
+  {{ $current = $letter }}
+  {{ end }}
+  <section class="term" id="{{ .id }}" aria-labelledby="{{ .id }}-h">
+    <h3 id="{{ .id }}-h">{{ .term }}</h3>
+    {{ range .definitions }}
+    {{ $src := index $g.sources .source }}
+    <figure class="definition">
+      <blockquote>{{ $.RenderString .text }}</blockquote>
+      <figcaption>{{ with .url | default $src.url }}<a href="{{ . }}">{{ end }}{{ $src.short }}{{ if or .url $src.url }}</a>{{ end }}</figcaption>
+    </figure>
+    {{ end }}
+  </section>
+  {{ end }}
+
+  <h2 id="sources">Sources</h2>
+  <ul>
+    {{ range $id, $s := $g.sources }}
+    <li><strong>{{ $s.short }}:</strong> <a href="{{ $s.url }}">{{ $s.name }}</a></li>
+    {{ end }}
+  </ul>
+</div>
+{{ end }}

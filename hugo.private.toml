@@ -1,0 +1,31 @@
+# Local-only preview that includes the imported toolkit text from private/
+# (which git ignores). The public build and GitHub Actions never use this file.
+#
+#   hugo server --config hugo.toml,hugo.private.toml
+#
+# Files in private/content/ replace the placeholder pages with the same path.
+
+[params]
+  privatePreview = true
+
+[[module.mounts]]
+  source = "private/content"
+  target = "content"
+[[module.mounts]]
+  source = "content"
+  target = "content"
+[[module.mounts]]
+  source = "private/static"
+  target = "static"
+[[module.mounts]]
+  source = "static"
+  target = "static"
+[[module.mounts]]
+  source = "layouts"
+  target = "layouts"
+[[module.mounts]]
+  source = "assets"
+  target = "assets"
+[[module.mounts]]
+  source = "data"
+  target = "data"

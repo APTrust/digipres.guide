@@ -1,14 +1,23 @@
 {{ define "main" }}
+{{ $p := hugo.Data.paths }}
 <div class="prose">
   <h1>{{ .Title }}</h1>
+  {{ with index $p.framing "home-intro" }}<p class="lede">{{ . }}</p>{{ end }}
+</div>
+{{ partial "pathfinder.html" (dict) }}
+<p><a href="{{ "start/" | relURL }}">Browse all paths</a></p>
+
+<div class="prose">
   {{ .Content }}
 </div>
 <ul class="phase-list">
-  {{ range site.Sections.ByWeight }}
+  {{ range site.Params.phases }}
+  {{ with site.GetPage (printf "/%s" .) }}
   <li>
     <a href="{{ .RelPermalink }}"><strong>{{ .LinkTitle }}</strong></a>
     <span>{{ .Description }}</span>
   </li>
+  {{ end }}
   {{ end }}
 </ul>
 {{ end }}

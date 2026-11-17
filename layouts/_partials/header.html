@@ -1,12 +1,25 @@
-{{ if not site.Params.launched }}
+{{ if site.Params.privatePreview }}
+<p class="preview-banner private">Private preview: includes unpublished toolkit text. Don't share or deploy this build.</p>
+{{ else if not site.Params.launched }}
 <p class="preview-banner">Preview: this site is under construction and not yet published.</p>
 {{ end }}
 <header class="site-header">
   <a class="site-title" href="{{ "/" | relURL }}">{{ site.Title }}</a>
-  <nav aria-label="Toolkit phases">
+  <nav aria-label="Main">
     <ul>
-      {{ range site.Sections.ByWeight }}
-      <li><a href="{{ .RelPermalink }}"{{ if or (eq $.Section .Section) (eq $ .) }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>
+      {{ with site.GetPage "/start" }}
+      <li><a class="nav-start" href="{{ .RelPermalink }}"{{ if eq $.Section "start" }} aria-current="page"{{ end }}>Start here</a></li>
+      {{ end }}
+      {{ range site.Params.phases }}
+      {{ with site.GetPage (printf "/%s" .) }}
+      <li><a class="nav-phase" href="{{ .RelPermalink }}"{{ if eq $.Section .Section }} aria-current="page"{{ end }}>{{ .LinkTitle }}</a></li>
+      {{ end }}
+      {{ end }}
+      {{ with site.GetPage "/tools" }}
+      <li><a href="{{ .RelPermalink }}"{{ if eq $.Section "tools" }} aria-current="page"{{ end }}>Tools</a></li>
+      {{ end }}
+      {{ with site.GetPage "/glossary" }}
+      <li><a href="{{ .RelPermalink }}"{{ if eq $.Section "glossary" }} aria-current="page"{{ end }}>Glossary</a></li>
       {{ end }}
     </ul>
   </nav>

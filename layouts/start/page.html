@@ -1,0 +1,81 @@
+{{ define "main" }}
+{{ $p := hugo.Data.paths }}
+{{ $tools := hugo.Data.tools }}
+{{ $storage := hugo.Data.storage }}
+{{ $s := index (where $p.situations "id" .Params.situation) 0 }}
+{{ $l := index (where $p.levels "id" .Params.level) 0 }}
+
+<nav class="crumbs" aria-label="Breadcrumb">
+  <a href="{{ .Parent.Parent.RelPermalink }}">{{ .Parent.Parent.Title }}</a> ›
+  <a href="{{ .Parent.RelPermalink }}">{{ $s.title }}</a> ›
+  <span aria-current="page">{{ $l.title }}</span>
+</nav>
+
+<article class="path" data-pagefind-body>
+  <header class="prose">
+    <p class="eyebrow">Your path</p>
+    <h1>{{ $s.title }}</h1>
+    <p class="lede">{{ $s.description }}</p>
+    <dl class="answers">
+      <div><dt>Your resources</dt><dd>{{ $l.title }}</dd></div>
+      <div><dt>Your copies goal</dt><dd>{{ $l.copies_goal }}</dd></div>
+    </dl>
+    {{ if ne $s.status "Approved" }}
+    <p class="draft-note" data-pagefind-ignore>Draft: the toolkit team is still reviewing this path.</p>
+    {{ end }}
+    {{ with index $p.framing "one-route" }}<p class="note">{{ . }}</p>{{ end }}
+  </header>
+
+  <ol class="steps">
+    {{ range $s.steps }}
+    <li class="step">
+      <h2>{{ .title }}</h2>
+      <p>{{ .blurb }}</p>
+      {{ if .varies }}
+      {{ with index .levels $l.id }}
+      <div class="at-level">
+        <p><strong>With {{ lower $l.title }}:</strong> {{ .text }}</p>
+        {{ with .storage }}
+        <ul class="storage">
+          {{ range . }}
+          {{ with index (where $storage "id" .) 0 }}
+          <li><strong>{{ .name }}</strong>{{ with .what }}: {{ . }}{{ end }}</li>
+          {{ end }}
+          {{ end }}
+        </ul>
+        {{ end }}
+      </div>
+      {{ end }}
+      {{ end }}
+      {{ with .tools }}
+      <p class="step-tools"><span>Tools:</span>
+        {{ range $i, $id := . }}{{ with index (where $tools "id" $id) 0 }}{{ if $i }}, {{ end }}<a href="{{ printf "/tools/#%s" .id | relURL }}">{{ .name }}</a>{{ end }}{{ end }}
+      </p>
+      {{ end }}
+      {{ with .section }}
+      {{ $sec := site.GetPage (printf "/%s" .) }}
+      {{ if not $sec }}{{ errorf "Path %s step links to section %q, which has no page in content/" $s.id . }}{{ end }}
+      <p class="step-read"><span>Read more:</span> <a href="{{ $sec.RelPermalink }}">{{ $sec.Title }}</a> <small>({{ $sec.Parent.Title }})</small></p>
+      {{ end }}
+    </li>
+    {{ end }}
+  </ol>
+
+  {{ with index $p.framing "good-enough" }}<p class="good-enough">{{ . }}</p>{{ end }}
+</article>
+
+<aside class="path-aside">
+  <h2>Different resources?</h2>
+  <ul>
+    {{ range $p.levels }}
+    {{ if ne .id $l.id }}
+    <li><a href="{{ printf "/start/%s/%s/" $s.id .id | relURL }}">{{ .title }}</a></li>
+    {{ end }}
+    {{ end }}
+  </ul>
+  <details>
+    <summary>Change your answers</summary>
+    {{ partial "pathfinder.html" (dict "situation" $s.id "level" $l.id) }}
+  </details>
+</aside>
+{{ end }}

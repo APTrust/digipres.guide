@@ -3,10 +3,21 @@
   <h1>{{ .Title }}</h1>
   {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
   {{ .Content }}
-  {{ with .Pages }}
+  {{/* List this phase's pages in the order of the Sections tab, then any others. */}}
+  {{ $listed := slice }}
+  {{ $phase := upper .Section }}
   <ul>
-    {{ range . }}<li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>{{ end }}
+    {{ range where hugo.Data.sections "phase" $phase }}
+    {{ with site.GetPage (printf "/%s" .id) }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+    {{ $listed = $listed | append .RelPermalink }}
+    {{ end }}
+    {{ end }}
+    {{ range .Pages }}
+    {{ if not (in $listed .RelPermalink) }}
+    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
+    {{ end }}
+    {{ end }}
   </ul>
-  {{ end }}
 </div>
 {{ end }}

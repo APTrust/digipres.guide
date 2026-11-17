@@ -24,9 +24,17 @@ refLinksErrorLevel = "ERROR"
   # While false, every page says "noindex" and robots.txt asks search engines to stay away.
   # Set to true on launch day.
   launched = false
+  # The toolkit's top-level sections, in order. Used for navigation.
+  phases = ["learn", "ready", "curate", "preserve"]
 
 [markup.goldmark.renderer]
   unsafe = false
 
 [markup.goldmark.parser.attribute]
   block = true
+
+[params.pathfinder]
+  # Which situation statuses (from the sheet) get pages on the site.
+  # Before launch, show everything the team has drafted. At launch, change
+  # this to ["Approved"].
+  statuses = ["Drafting", "Ready for review", "Approved"]

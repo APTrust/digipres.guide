@@ -1,0 +1,26 @@
+{{/*
+  Generates one page per situation (/start/<situation>/) and one per
+  situation and level (/start/<situation>/<level>/) from data/paths.yaml.
+  The data comes from the team's sheet via scripts/convert_path_data.py.
+*/}}
+{{ $p := hugo.Data.paths }}
+{{ $show := site.Params.pathfinder.statuses }}
+{{ range $s := $p.situations }}
+  {{ if in $show $s.status }}
+    {{ $.AddPage (dict
+      "kind" "section"
+      "path" $s.id
+      "title" $s.title
+      "params" (dict "situation" $s.id "description" $s.description)
+    ) }}
+    {{ range $i, $l := $p.levels }}
+      {{ $.AddPage (dict
+        "kind" "page"
+        "path" (printf "%s/%s" $s.id $l.id)
+        "title" (printf "%s, %s" $s.title (lower $l.title))
+        "weight" (add $i 1)
+        "params" (dict "situation" $s.id "level" $l.id "description" $s.description)
+      ) }}
+    {{ end }}
+  {{ end }}
+{{ end }}
