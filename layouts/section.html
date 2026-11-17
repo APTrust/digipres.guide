@@ -1,23 +1,46 @@
 {{ define "main" }}
-<div class="prose" data-pagefind-body>
-  <h1>{{ .Title }}</h1>
-  {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
-  {{ .Content }}
-  {{/* List this phase's pages in the order of the Sections tab, then any others. */}}
-  {{ $listed := slice }}
-  {{ $phase := upper .Section }}
-  <ul>
-    {{ range where hugo.Data.sections "phase" $phase }}
-    {{ with site.GetPage (printf "/%s" .id) }}
-    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
-    {{ $listed = $listed | append .RelPermalink }}
+{{ $sections := partial "phase-sections.html" . }}
+{{ $n := 0 }}
+{{ range $i, $p := site.Params.phases }}{{ if eq $p $.Section }}{{ $n = add $i 1 }}{{ end }}{{ end }}
+
+<div class="phase-layout">
+  <header id="top" class="phase-head" data-pagefind-body>
+    {{ if $n }}<p class="eyebrow">Phase {{ $n }} of {{ len site.Params.phases }}</p>{{ end }}
+    <h1>{{ .Title }}</h1>
+    {{ with .Description }}<p class="lede">{{ . }}</p>{{ end }}
+    {{ .Content }}
+  </header>
+
+  <nav class="toc" aria-labelledby="toc-heading">
+    <h2 id="toc-heading">On this page</h2>
+    <ol>
+      {{ range $i, $s := $sections }}
+      {{ $sid := .File.ContentBaseName }}
+      <li>
+        <a href="#{{ $sid }}"><span class="sec-num">{{ $n }}.{{ add $i 1 }}</span> {{ .Title }}</a>
+        {{ partial "toc-headings.html" (dict "headings" .Fragments.Headings "sid" $sid) }}
+      </li>
+      {{ end }}
+    </ol>
+  </nav>
+
+  <div class="phase-body" data-pagefind-body>
+
+    {{ range $i, $s := $sections }}
+    {{ $sid := .File.ContentBaseName }}
+    <section class="toolkit-section" id="{{ $sid }}" aria-labelledby="{{ $sid }}-title">
+      <h2 id="{{ $sid }}-title" class="has-anchor"><span class="sec-num">{{ $n }}.{{ add $i 1 }}</span> {{ .Title }}<a class="anchor" href="#{{ $sid }}" aria-label="Link to “{{ .Title }}”">#</a></h2>
+      {{ .Content }}
+      <p class="section-end">
+        <a href="#top">Back to top</a>
+        {{ if lt (add $i 1) (len $sections) }}{{ with index $sections (add $i 1) }}
+        <span aria-hidden="true">·</span> Next: <a href="#{{ .File.ContentBaseName }}">{{ .Title }}</a>
+        {{ end }}{{ end }}
+      </p>
+    </section>
     {{ end }}
-    {{ end }}
-    {{ range .Pages }}
-    {{ if not (in $listed .RelPermalink) }}
-    <li><a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a></li>
-    {{ end }}
-    {{ end }}
-  </ul>
+
+    {{ partial "reading-pager.html" . }}
+  </div>
 </div>
 {{ end }}

@@ -1,0 +1,2 @@
+{{/* Returns true when the page is a section inside a toolkit phase (e.g. /learn/why-it-matters/). */}}
+{{ return and .IsPage (in site.Params.phases .Section) }}

@@ -1,0 +1,13 @@
+{{/* Subheadings for the contents list: the section's top-level subheadings only. */}}
+{{ $sid := .sid }}
+{{ $items := slice }}
+{{ range .headings }}
+  {{ if and .ID (eq .Level 2) }}{{ $items = $items | append . }}
+  {{ else }}{{ range .Headings }}{{ if and .ID (eq .Level 2) }}{{ $items = $items | append . }}{{ end }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ with $items }}
+<ol class="toc-sub">
+  {{ range . }}<li><a href="#{{ $sid }}-{{ .ID }}">{{ .Title | safeHTML }}</a></li>{{ end }}
+</ol>
+{{ end }}

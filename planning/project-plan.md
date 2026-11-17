@@ -28,7 +28,7 @@ The toolkit's four phases are **LEARN** (concepts and risks), **READY** (organiz
 **In scope for launch**
 
 - **Pathfinder:** two questions (what you are working with, what you can put toward it). Every answer combination gets its own static, shareable page at `/start/<situation>/<level>/`.
-- **Full toolkit:** the introduction, LEARN, READY, CURATE, PRESERVE, and the conclusion, with one page per section and stable URLs.
+- **Full toolkit:** the introduction, LEARN, READY, CURATE, PRESERVE, and the conclusion. Each phase reads as one page, with numbered sections, an "On this page" contents list, a link on every heading, "Back to top" and "Next" after each section, and previous and next links between phases. Every section also keeps a short, stable URL (`/curate/check/`) that forwards to its place on the phase page (`/curate/#check`). Those short URLs are the ones to give CLIR.
 - **Checklists:** interactive, with progress saved in the reader's own browser, plus a print-friendly worksheet view.
 - **Glossary:** a glossary page and a searchable side panel, with each definition credited to its source (SAA, DPC, FADGI) and terms linked from the text.
 - **Tools directory:** filterable by workflow step and platform.

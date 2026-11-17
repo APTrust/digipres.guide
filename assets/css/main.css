@@ -236,3 +236,52 @@ main:focus { outline: none; }
 .preview-banner.private { background: #7a1f1f; color: #fff; font-weight: 600; }
 
 img { max-width: 100%; height: auto; }
+
+/* ---------- Phase pages: full text with contents and signposts ---------- */
+/* Anchor jumps are instant (no smooth scrolling), so bookmarks and the
+   section redirects always land in the right place. */
+[id] { scroll-margin-top: 1rem; }
+
+.phase-layout { display: grid; gap: 1.5rem 2rem; grid-template-areas: "head" "toc" "body"; }
+.phase-head { grid-area: head; max-width: var(--measure); }
+.toc { grid-area: toc; }
+.phase-body { grid-area: body; max-width: var(--measure); min-width: 0; }
+.phase-head h1 { line-height: 1.2; font-size: clamp(1.75rem, 4vw, 2.5rem); margin-bottom: .25rem; }
+
+.toc { background: var(--surface); border: 1px solid var(--border); border-radius: .5rem; padding: .75rem 1rem; font-size: .9375rem; }
+.toc h2 { font-size: .875rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); margin: 0 0 .5rem; }
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc > ol > li { margin: .35rem 0; }
+.toc > ol > li > a { font-weight: 600; text-decoration: none; display: flex; gap: .4rem; }
+.toc a:hover { text-decoration: underline; }
+.toc-sub { padding-left: 2.1rem !important; margin-top: .15rem !important; }
+.toc-sub li { margin: .15rem 0; }
+.toc-sub a { color: var(--muted); text-decoration: none; }
+.sec-num { color: var(--muted); font-variant-numeric: tabular-nums; font-weight: 600; }
+
+@media (min-width: 60rem) {
+  .phase-layout { grid-template-columns: 16rem minmax(0, 1fr); grid-template-areas: "toc head" "toc body"; align-items: start; }
+  .toc { grid-row: 1 / span 2; }
+  .toc { position: sticky; top: 1rem; max-height: calc(100vh - 2rem); overflow-y: auto; }
+}
+
+.toolkit-section { border-top: 2px solid var(--border); margin-top: 2.5rem; padding-top: .5rem; }
+.toolkit-section:target > h2, .has-anchor:target { background: var(--banner-bg); color: var(--banner-text); }
+.toolkit-section > h2 { font-size: 1.6rem; line-height: 1.25; }
+.toolkit-section > h2 .sec-num { margin-right: .35rem; }
+.toolkit-section h3 { font-size: 1.25rem; margin-top: 1.75rem; }
+.toolkit-section h4 { font-size: 1.05rem; }
+
+.has-anchor .anchor { margin-left: .4rem; font-weight: 400; color: var(--muted); text-decoration: none; opacity: 0; }
+.has-anchor:hover .anchor, .has-anchor .anchor:focus-visible { opacity: 1; }
+@media (hover: none) { .has-anchor .anchor { opacity: .6; } }
+
+.section-end { font-size: .9375rem; color: var(--muted); margin-top: 1.5rem; }
+
+.footnotes { font-size: .875rem; color: var(--muted); border-top: 1px dashed var(--border); margin-top: 1.5rem; }
+.footnotes ol { padding-left: 1.25rem; }
+
+.reading-pager { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 3rem; }
+.reading-pager a { display: block; background: var(--surface); border: 1px solid var(--border); border-radius: .5rem; padding: .75rem 1rem; font-weight: 700; text-decoration: none; }
+.reading-pager a span { display: block; font-size: .8125rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+.reading-pager .next { grid-column: 2; text-align: right; }

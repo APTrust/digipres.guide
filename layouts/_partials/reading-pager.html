@@ -1,0 +1,21 @@
+{{/*
+  Previous / next links through the toolkit in reading order:
+  Introduction, LEARN, READY, CURATE, PRESERVE, Conclusion, Works Cited.
+  Pages that don't exist yet (the private text) are skipped.
+*/}}
+{{ $chain := slice }}
+{{ range slice "/introduction" }}{{ with site.GetPage . }}{{ $chain = $chain | append . }}{{ end }}{{ end }}
+{{ range site.Params.phases }}{{ with site.GetPage (printf "/%s" .) }}{{ $chain = $chain | append . }}{{ end }}{{ end }}
+{{ range slice "/conclusion" "/works-cited" }}{{ with site.GetPage . }}{{ $chain = $chain | append . }}{{ end }}{{ end }}
+{{ $i := -1 }}
+{{ range $k, $p := $chain }}{{ if eq $p.RelPermalink $.RelPermalink }}{{ $i = $k }}{{ end }}{{ end }}
+{{ if ge $i 0 }}
+<nav class="reading-pager" aria-label="Toolkit reading order">
+  {{ if gt $i 0 }}{{ with index $chain (sub $i 1) }}
+  <a class="prev" href="{{ .RelPermalink }}"><span>Previous</span> {{ .LinkTitle }}</a>
+  {{ end }}{{ end }}
+  {{ if lt (add $i 1) (len $chain) }}{{ with index $chain (add $i 1) }}
+  <a class="next" href="{{ .RelPermalink }}"><span>Next</span> {{ .LinkTitle }}</a>
+  {{ end }}{{ end }}
+</nav>
+{{ end }}

@@ -55,7 +55,7 @@
       {{ with .section }}
       {{ $sec := site.GetPage (printf "/%s" .) }}
       {{ if not $sec }}{{ errorf "Path %s step links to section %q, which has no page in content/" $s.id . }}{{ end }}
-      <p class="step-read"><span>Read more:</span> <a href="{{ $sec.RelPermalink }}">{{ $sec.Title }}</a> <small>({{ $sec.Parent.Title }})</small></p>
+      <p class="step-read"><span>Read more:</span> <a href="{{ partial "section-url.html" $sec }}">{{ $sec.Title }}</a> <small>({{ $sec.Parent.Title }})</small></p>
       {{ end }}
     </li>
     {{ end }}

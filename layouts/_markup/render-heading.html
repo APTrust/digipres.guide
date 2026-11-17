@@ -1,0 +1,14 @@
+{{- /*
+  Every heading gets an id and a visible link to itself, so any part of the
+  toolkit can be bookmarked or shared. Headings inside a phase section are
+  prefixed with the section's id (they all share the phase page) and moved
+  down one level under the section's own h2.
+*/ -}}
+{{- $id := .Anchor -}}
+{{- $level := .Level -}}
+{{- if partial "phase-member.html" .Page -}}
+  {{- $id = printf "%s-%s" .Page.File.ContentBaseName .Anchor -}}
+  {{- $level = add .Level 1 -}}
+{{- end -}}
+{{- if gt $level 6 }}{{ $level = 6 }}{{ end -}}
+<h{{ $level }} id="{{ $id }}" class="has-anchor">{{ .Text }}<a class="anchor" href="#{{ $id }}" aria-label="Link to “{{ .PlainText }}”">#</a></h{{ $level }}>

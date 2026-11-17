@@ -2,8 +2,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ .Title }} · {{ site.Title }}{{ end }}</title>
 <meta name="description" content="{{ .Description | default site.Params.description }}">
+{{ if partial "phase-member.html" . }}
+{{/* Section addresses forward to their place on the phase page. */}}
+{{ $to := partial "section-url.html" . }}
+<meta http-equiv="refresh" content="0; url={{ $to }}">
+<meta name="robots" content="noindex">
+<link rel="canonical" href="{{ .Parent.Permalink }}#{{ .File.ContentBaseName }}">
+{{ else }}
 {{ if not site.Params.launched }}<meta name="robots" content="noindex, nofollow">{{ end }}
 <link rel="canonical" href="{{ .Permalink }}">
+{{ end }}
 {{ with resources.Get "css/main.css" | minify | fingerprint }}
 <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
 {{ end }}

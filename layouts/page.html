@@ -1,7 +1,17 @@
 {{ define "main" }}
-<article class="prose"{{ if not .Params.stub }} data-pagefind-body{{ end }}>
-  {{ with .Parent }}{{ if not .IsHome }}<p class="eyebrow"><a href="{{ .RelPermalink }}">{{ .Title }}</a></p>{{ end }}{{ end }}
-  <h1>{{ .Title }}</h1>
-  {{ .Content }}
-</article>
+{{ if partial "phase-member.html" . }}
+  {{/* Sections live on their phase page; this address forwards there (see head.html). */}}
+  {{ $to := partial "section-url.html" . }}
+  <div class="prose">
+    <h1>{{ .Title }}</h1>
+    <p>This section is part of the <a href="{{ .Parent.RelPermalink }}">{{ .Parent.Title }}</a> page. <a href="{{ $to }}">Go to “{{ .Title }}”</a>.</p>
+  </div>
+{{ else }}
+  <article class="prose"{{ if not .Params.stub }} data-pagefind-body{{ end }}>
+    {{ with .Parent }}{{ if not .IsHome }}<p class="eyebrow"><a href="{{ .RelPermalink }}">{{ .Title }}</a></p>{{ end }}{{ end }}
+    <h1>{{ .Title }}</h1>
+    {{ .Content }}
+    {{ partial "reading-pager.html" . }}
+  </article>
+{{ end }}
 {{ end }}

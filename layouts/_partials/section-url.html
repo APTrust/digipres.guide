@@ -1,0 +1,9 @@
+{{/*
+  The address to send readers to for a page. Sections inside a phase live on
+  the phase page, so they link to its anchor: /learn/#why-it-matters.
+*/}}
+{{ $url := .RelPermalink }}
+{{ if partial "phase-member.html" . }}
+  {{ $url = printf "%s#%s" .Parent.RelPermalink .File.ContentBaseName }}
+{{ end }}
+{{ return $url }}

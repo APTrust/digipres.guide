@@ -1,0 +1,20 @@
+{{/*
+  A phase's sections in reading order: imported pages by their manuscript
+  order (weight), then placeholders in the order of the path data's Sections
+  tab, then anything else.
+*/}}
+{{ $phase := . }}
+{{ $ordered := slice }}
+{{ $seen := slice }}
+{{ range (where $phase.RegularPages "Weight" "!=" 0).ByWeight }}
+  {{ $ordered = $ordered | append . }}{{ $seen = $seen | append .RelPermalink }}
+{{ end }}
+{{ range where hugo.Data.sections "phase" (upper $phase.Section) }}
+  {{ with site.GetPage (printf "/%s" .id) }}
+    {{ if not (in $seen .RelPermalink) }}{{ $ordered = $ordered | append . }}{{ $seen = $seen | append .RelPermalink }}{{ end }}
+  {{ end }}
+{{ end }}
+{{ range $phase.RegularPages }}
+  {{ if not (in $seen .RelPermalink) }}{{ $ordered = $ordered | append . }}{{ end }}
+{{ end }}
+{{ return $ordered }}

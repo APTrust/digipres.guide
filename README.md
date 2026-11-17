@@ -1,6 +1,6 @@
 # Digital Preservation Toolkit website
 
-Source for **[digipres.guide](https://digipres.guide)**, the website for *Digital Preservation Appraisal & Selection: Toolkit for Organizations with Limited Resources*. The toolkit is being published by CLIR in its Pocket Burgundy series, and CLIR will produce the official PDF.
+Source for **[digipres.guide](https://digipres.guide)**, the website for *Digital Preservation Toolkit for Organizations with Limited Resources*. The toolkit is being published by CLIR in its Pocket Burgundy series, and CLIR will produce the official PDF.
 
 The website presents the same content in a form people can use while they work. A pathfinder asks what you're working with and what you can put toward it, then shows the steps, tools, and toolkit sections that matter most for your situation. The full toolkit is always one click away. It's organized in four phases:
 

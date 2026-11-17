@@ -33,6 +33,10 @@ refLinksErrorLevel = "ERROR"
 [markup.goldmark.parser.attribute]
   block = true
 
+# Several sections share one phase page, so footnote ids need a per-section prefix.
+[markup.goldmark.extensions.footnote]
+  enableAutoIDPrefix = true
+
 [params.pathfinder]
   # Which situation statuses (from the sheet) get pages on the site.
   # Before launch, show everything the team has drafted. At launch, change

@@ -102,6 +102,10 @@ def clean(text, stats):
     text = re.sub(r'<span class="mark">(.*?)</span>', r"\1", text, flags=re.S)
     text = re.sub(r"</?u>", "", text)
     text = text.replace("<!-- -->", "")
+    # Word soft line breaks (Shift+Enter) at the end of bold or italic text come
+    # out of pandoc as "**Title\**", which Markdown reads as a literal asterisk.
+    # Move the line break outside the emphasis: "**Title**\".
+    text = re.sub(r"\\(\*{1,3})$", r"\1\\", text, flags=re.M)
     text = re.sub(r"\[([^\]]+)\]\((https?://[^)\s]+)\)", unwrap_link, text)
 
     def img(m):
