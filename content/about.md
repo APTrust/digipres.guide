@@ -25,6 +25,16 @@ We collect as little as we can.
 
 The site doesn't use cookies, and apart from the Matomo counter it doesn't load anything from other servers.
 
+## License
+
+The toolkit text, the glossary, and the pathfinder's data are licensed under the [Creative Commons Attribution-NonCommercial 4.0 International License (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/). You may share and adapt them for non-commercial purposes, as long as you give credit and link to the license.
+
+Some things on the site aren't covered by that license:
+
+- Glossary definitions quoted from the DPC, SAA, and FADGI belong to those organizations, under their own terms.
+- The CLIR name and brandmark belong to CLIR.
+- The tools and services listed on the site belong to their makers.
+
 ## Source code
 
 The website's source is on [GitHub](https://github.com/APTrust/digipres.guide). Its code is licensed under the GNU General Public License, version 3 or later.

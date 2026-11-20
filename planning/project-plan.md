@@ -65,7 +65,7 @@ gantt
 
 | Status | Phase | Dates | What happens | Gate |
 | --- | --- | --- | --- | --- |
-| ✅ Done (Nov 17) | 0. Setup | Nov 23 to 25 | Repo in the APTrust org, pinned Hugo, Actions deploy to Pages, `digipres.guide` DNS and HTTPS. Code licensed GPL-3.0-or-later; the content license is still an open question. | |
+| ✅ Done (Nov 17) | 0. Setup | Nov 23 to 25 | Repo in the APTrust org, pinned Hugo, Actions deploy to Pages, `digipres.guide` DNS and HTTPS. Code licensed GPL-3.0-or-later; content licensed CC BY-NC 4.0 (CLIR's choice, Nov 20). | |
 | ✅ Done (Nov 17) | 1. Draft import and data files | Nov 30 to Dec 11 | ✅ Converter from the path data sheet to `paths.yaml`, `tools.yaml`, `storage.yaml`, and `sections.yaml`, plus placeholder pages for every section. ✅ `glossary.yaml` from the Nov 10 draft. ✅ Import script (pandoc) turns the Nov 10 draft into 36 pages, kept private until launch (see [Keeping the toolkit text private](#keeping-the-toolkit-text-private)). | Path data template goes to the team in Phase 0 |
 | 🔄 Started early | 2. Design and templates | Dec 7 to 18 | ✅ Theme (our own identity with a CLIR credit; all colors and fonts are tokens at the top of `main.css`), phase pages, about, credits, and privacy page. ✅ Interactive checklists and a printable `/checklists/` worksheet. ✅ Glossary side panel, with terms linked from the text. ✅ Tools filters. ✅ Search page. ✅ Feedback page, waiting on the Google Form's IDs. ⬜ CLIR branding, once CLIR answers. See [Follow-ups from Phase 2](#follow-ups-from-phase-2). | Decisions and CLIR branding answer by **Dec 4** |
 | | Winter break | Dec 21 to Jan 1 | | Path data due **Dec 18** · Final manuscript due **Dec 15** |
@@ -114,8 +114,8 @@ Which situations appear depends on their Status. Before launch, everything excep
 - [ ] Glossary: the final term list, and which source's definition to show for each term. A first version from the Nov 10 draft is on the site at `/glossary/`, showing every source's definition (cleared to be public on Nov 17). Re-run `scripts/import_glossary.py` on each new draft.
 - [ ] Figures: source files (SVG preferred) and alt text for the cycle diagram and the two workflow diagrams. If none exist, we'll redraw them.
 - [ ] Tools tab: check URLs and notes for the tools you know.
-- [ ] CLIR: whether Pocket Burgundy branding is required.
-- [ ] A content license (for example, CC BY 4.0).
+- [ ] CLIR: whether Pocket Burgundy branding is required. (Nov 20: CLIR's official brandmark is now in the footer, per CLIR's 2017 Brand Guidelines.)
+- [x] A content license: CLIR chose CC BY-NC 4.0 International (Nov 20). Shown in the footer and on the About page.
 
 ### Follow-ups from Phase 2
 
@@ -123,6 +123,7 @@ Which situations appear depends on their Status. Before launch, everything excep
 - [ ] **Path data sheet, Tools tab:** the virus scanner's "Used for" is "Prepare", a workflow stage rather than a task, so "Prepare" shows up as a task in the tools filter. Change it (for example, to "Virus scanning") and re-run the converter.
 - [ ] **Feedback form spam field:** once the Google Form exists, submit the site's form with JavaScript turned off and check that Google accepts the extra hidden `website` (honeypot) field. If it doesn't, remove the field's `name` and rely on the JavaScript check only.
 - [ ] **About and credits page:** add the project collaborators (Phase 3a).
+- [ ] **Copyright holders:** the authors hold the copyright, but the CC BY-NC 4.0 notices don't name them yet. Once the author list is final (with the credits above), add a copyright line naming them to the footer, the About page's License section, and `CONTENT-LICENSE.md`.
 
 ## Final manuscript import
 
@@ -249,6 +250,5 @@ Project meetings and scheduling stay with the team's existing coordinator.
 
 - Is Pocket Burgundy branding required? (CLIR, by Dec 4)
 - When does CLIR plan to publish, and when do they lock the PDF?
-- Which content license? CC-BY-SA 4.0? Do we want CC-BY-NC-SA 4.0? (The code is GPL-3.0-or-later; this covers the text, glossary, and path data.)
 - Confirm the winter break dates for each team member.
 - How will section authors review their pages (Jan 11 to 22) while the text is private? Options: a screen-share walkthrough, a zipped private build sent to each author, or a password-protected preview host.

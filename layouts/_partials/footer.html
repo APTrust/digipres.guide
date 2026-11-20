@@ -1,7 +1,16 @@
 <footer class="site-footer">
   <div class="site-footer-inner">
+    {{/* CLIR's official brandmark, unaltered (CLIR Brand Guidelines, 2017):
+         two-color on light backgrounds, reversed (white) on dark ones. */}}
+    <a class="footer-brandmark" href="https://www.clir.org/">
+      <picture>
+        <source srcset="{{ "images/clir-brandmark-white.svg" | relURL }}" media="(prefers-color-scheme: dark)">
+        <img src="{{ "images/clir-brandmark.svg" | relURL }}" alt="Council on Library and Information Resources (CLIR)" width="159" height="72">
+      </picture>
+    </a>
     <div class="footer-credit">
       <p>A companion to <cite>Digital Preservation Toolkit for Organizations with Limited Resources</cite>, published by <a href="https://www.clir.org/">CLIR</a>.{{ with site.Params.clir.pdf }} <a href="{{ . }}">Read the PDF from CLIR</a>.{{ end }}{{ with site.Params.clir.doi }} DOI: <a href="https://doi.org/{{ . }}">{{ . }}</a>{{ end }}</p>
+      <p class="footer-license">Text, glossary, and pathfinder data are licensed under <a rel="license" href="https://creativecommons.org/licenses/by-nc/4.0/">CC BY-NC 4.0</a>, except quoted glossary definitions. Site code is <a href="{{ site.Params.repo }}/blob/{{ site.Params.branch }}/LICENSE">GPL-3.0-or-later</a>.{{ with site.GetPage "/about" }} <a href="{{ .RelPermalink }}#license">License details</a>.{{ end }}</p>
     </div>
     <ul class="footer-links">
       {{ with site.GetPage "/about" }}<li><a href="{{ .RelPermalink }}">About and credits</a></li>

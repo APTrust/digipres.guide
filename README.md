@@ -26,6 +26,8 @@ The website presents the same content in a form people can use while they work. 
 | [`scripts/import_manuscript.py`](scripts/import_manuscript.py) | Imports the manuscript (.docx) into one page per section, in `private/` until launch. Needs pandoc. |
 | [`scripts/import_glossary.py`](scripts/import_glossary.py) | Imports the glossary appendix from a manuscript draft (.docx) into `data/glossary.yaml`. Needs pandoc. |
 | `layouts/`, `assets/` | Hugo templates, the stylesheet (`assets/css/main.css`, with every color and font as a token at the top), and small hand-written scripts in `assets/js/`: the pathfinder, checklists, glossary panel, tools filters, search, and feedback form |
+| `static/` | Files served as-is: the favicon and CLIR's official brandmark (`static/images/`, which must not be altered) |
+| [`CONTENT-LICENSE.md`](CONTENT-LICENSE.md) | The content license (CC BY-NC 4.0) and what it doesn't cover |
 | `hugo.toml` | Site settings: the `launched` switch, CLIR's PDF link, the feedback form's Google Form IDs, and which paths to show |
 
 Manuscript drafts are kept in `content-drafts/`, and their imported text in `private/`. Git ignores both folders, so the toolkit text isn't published in this repository until launch.
@@ -115,4 +117,6 @@ The toolkit is written by a team of digital preservation practitioners. The site
 
 **Code:** the site's templates, styles, scripts, and build workflow (`layouts/`, `assets/`, `scripts/`, `.github/`, and the Hugo configuration) are licensed under the [GNU General Public License v3.0 or later](LICENSE).
 
-**Content:** the toolkit text, glossary, and pathfinder data (`content/`, `data/`, `planning/`, and `concepts/`) are not covered by the GPL. Their license is still to be decided; see the open questions in the [project plan](planning/project-plan.md#open-questions). Glossary definitions are quoted from the DPC, SAA, and FADGI, which keep their own terms.
+**Content:** the toolkit text, glossary, and pathfinder data (`content/`, `data/`, `planning/`, and `concepts/`) are licensed under [Creative Commons Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)](https://creativecommons.org/licenses/by-nc/4.0/); see [CONTENT-LICENSE.md](CONTENT-LICENSE.md). Glossary definitions are quoted from the DPC, SAA, and FADGI, which keep their own terms.
+
+**CLIR brandmark:** `static/images/clir-brandmark.svg` (two-color, for light mode) and `clir-brandmark-white.svg` (reversed, for dark mode) are CLIR's official files from the [CLIR brandmark page](https://www.clir.org/about-us/clir-brandmark/), shown in the footer. They belong to CLIR and are covered by neither license. CLIR's brand guidelines forbid altering them: don't edit, recolor, crop, or stretch them.
